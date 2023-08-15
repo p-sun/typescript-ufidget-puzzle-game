@@ -1,15 +1,20 @@
 # typescript-ufidget-puzzle-game
 
-Turn a U-Fidget toy into a spatial puzzle with this app!
+Turn a U-Fidget toy into a spatial puzzle with this puzzle generator! Can you recreate the pattern generated in real life?
 
 [Play Online on Stackblitz](https://stackblitz.com/edit/typescript-gehym3?file=index.ts)
 
+[Buy an U-Fidget on Amazon.com](https://a.co/d/6UT2AUO)
+
 To run locally, clone this repo, install npm and Node.js, then `npm install` and `npm start`.
-![U-Fidgit1_470x](https://github.com/p-sun/typescript-ufidget-puzzle-game/assets/9044578/0bb284c1-5454-4070-9163-9303d6625cd4)
 
-![Screenshot 2023-08-14 at 5 58 11 PM](https://github.com/p-sun/typescript-ufidget-puzzle-game/assets/9044578/cc5c5521-00ca-4f4b-8202-b381d6e95dbf)
+<div style="display:flex">
+  <img src="https://github.com/p-sun/typescript-ufidget-puzzle-game/assets/9044578/31bb7831-b3c7-45ed-9fdc-ac4c394e28bc.png" height="400">
+  <img src="https://github.com/p-sun/typescript-ufidget-puzzle-game/assets/9044578/0bb284c1-5454-4070-9163-9303d6625cd4.png" height="400">
+</div>
 
-https://github.com/p-sun/typescript-ufidget-puzzle-game/assets/9044578/a2298810-feaa-40b5-a1bb-22588ec18dbf
+# Intro Video
 
-![Screenshot 2023-08-14 at 5 55 44 PM](https://github.com/p-sun/typescript-ufidget-puzzle-game/assets/9044578/9c70afbc-c6c5-4b61-a93e-66bcaa4bb16a)
+[![How to Fold Patterns](https://img.youtube.com/vi/NOzTo-OIcXk/0.jpg)](https://www.youtube.com/watch?v=NOzTo-OIcXk)
 
+https://github.com/p-sun/typescript-ufidget-puzzle-game/assets/9044578/08af03ca-34a7-4dd5-a636-0b0f093f603a
