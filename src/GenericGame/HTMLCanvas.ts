@@ -7,20 +7,21 @@ import {
   EllipseOptions,
   LineOptions,
   TextOptions,
-  CanvasKeyEvent,
-  CanvasMouseEvent,
   PolygonOptions,
+  CanvasListener,
 } from './ICanvas';
 
 export default class HTMLCanvas implements ICanvas {
   #context: CanvasRenderingContext2D;
   #size: Vec2;
-  #canvasElement: HTMLCanvasElement;
+  #canvas: HTMLCanvasElement;
+  #listener: CanvasListener | undefined;
 
   constructor(canvasElement: HTMLCanvasElement, size: Vec2) {
-    this.#canvasElement = canvasElement;
+    this.#canvas = canvasElement;
     this.#context = canvasElement.getContext('2d') as CanvasRenderingContext2D;
     this.#size = size;
+    this.setupListeners();
   }
 
   get size(): Vec2 {
@@ -30,12 +31,12 @@ export default class HTMLCanvas implements ICanvas {
   set size(newSize: Vec2) {
     this.#size = newSize;
 
-    this.#canvasElement.style.width = newSize.x + 'px';
-    this.#canvasElement.style.height = newSize.y + 'px';
+    this.#canvas.style.width = newSize.x + 'px';
+    this.#canvas.style.height = newSize.y + 'px';
 
     const scale = window.devicePixelRatio;
-    this.#canvasElement.width = newSize.x * scale;
-    this.#canvasElement.height = newSize.y * scale;
+    this.#canvas.width = newSize.x * scale;
+    this.#canvas.height = newSize.y * scale;
 
     this.#context.scale(scale, scale);
   }
@@ -49,6 +50,14 @@ export default class HTMLCanvas implements ICanvas {
 
   get midpoint(): Vec2 {
     return this.fromNormalizedCoordinate(new Vec2(0.5, 0.5));
+  }
+
+  setListener(listener: CanvasListener): void {
+    this.#listener = listener;
+  }
+
+  unsetListener(): void {
+    this.#listener = undefined;
   }
 
   fromNormalizedCoordinate(coord: Vec2): Vec2 {
@@ -244,128 +253,79 @@ export default class HTMLCanvas implements ICanvas {
     };
   }
 
-  #keyboardListener: ((evt: CanvasKeyEvent) => void) | undefined = undefined;
-  #_keyboardListener: ((evt: KeyboardEvent) => void) | undefined = undefined;
-
-  setKeyDownListener(fn: (key: CanvasKeyEvent) => void) {
-    this.unsetKeyDownListener();
-
-    this.#keyboardListener = fn;
-    this.#_keyboardListener = (key) => {
-      this.#canvasKeyboardListener(key);
-    };
-    window.addEventListener('keydown', this.#_keyboardListener);
-  }
-
-  unsetKeyDownListener() {
-    if (this.#_keyboardListener) {
-      window.removeEventListener('keydown', this.#_keyboardListener);
-      this.#_keyboardListener = undefined;
-      this.#keyboardListener = undefined;
-    }
-  }
-
-  #canvasKeyboardListener(event: KeyboardEvent) {
-    const listener = this.#keyboardListener;
-    if (!listener) {
-      return;
-    }
-
-    const { key, code } = event;
-    if (key === 'ArrowUp') {
-      listener({ key: 'arrow', direction: `up` });
-    } else if (key === 'ArrowDown') {
-      listener({ key: 'arrow', direction: `down` });
-    } else if (key === 'ArrowLeft') {
-      listener({ key: 'arrow', direction: `left` });
-    } else if (key === 'ArrowRight') {
-      listener({ key: 'arrow', direction: `right` });
-    } else if (key === ' ') {
-      listener({ key: 'space' });
-    } else if (code === 'KeyE') {
-      listener({ key: 'letter', letter: 'E' });
-    } else if (code === 'KeyM') {
-      listener({ key: 'letter', letter: 'M' });
-    } else if (code === 'KeyH') {
-      listener({ key: 'letter', letter: 'H' });
-    } else if (code === 'KeyI') {
-      listener({ key: 'letter', letter: 'I' });
-    } else if (code === 'Backspace') {
-      listener({ key: 'backspace' });
-    } else if (code.startsWith('Digit')) {
-      const digit = Number(event.code.slice('Digit'.length));
-      listener({ key: 'digit', digit: digit });
-    }
-  }
-
-  unsetMouseListener() {
-    this.#canvasElement.oncontextmenu = null;
-    this.#canvasElement.onmousedown = null;
-    this.#canvasElement.onmouseup = null;
-    this.#canvasElement.onmouseenter = null;
-    this.#canvasElement.onmouseleave = null;
-    this.#canvasElement.onmousemove = null;
-  }
-
-  setMouseListener(fn: (event: CanvasMouseEvent, pos: Vec2) => void): void {
-    const getPos = (evt: MouseEvent) => {
-      const rect = this.#canvasElement.getBoundingClientRect();
-      return new Vec2(evt.clientX - rect.x, evt.clientY - rect.y);
+  private setupListeners() {
+    const getPos = (clientX: number, clientY: number) => {
+      const rect = this.#canvas.getBoundingClientRect();
+      return { x: clientX - rect.x, y: clientY - rect.y };
     };
 
-    this.#canvasElement.oncontextmenu = (evt: MouseEvent) => {
-      evt.preventDefault();
-    };
+    document.addEventListener('keydown', (event) => {
+      const { key, code } = event;
+      if (key === 'ArrowUp') {
+        this.#listener?.onKeyDown({ key: 'arrow', direction: `up` });
+      } else if (key === 'ArrowDown') {
+        this.#listener?.onKeyDown({ key: 'arrow', direction: `down` });
+      } else if (key === 'ArrowLeft') {
+        this.#listener?.onKeyDown({ key: 'arrow', direction: `left` });
+      } else if (key === 'ArrowRight') {
+        this.#listener?.onKeyDown({ key: 'arrow', direction: `right` });
+      } else if (key === ' ') {
+        this.#listener?.onKeyDown({ key: 'space' });
+      } else if (code === 'KeyE') {
+        this.#listener?.onKeyDown({ key: 'letter', letter: 'E' });
+      } else if (code === 'KeyM') {
+        this.#listener?.onKeyDown({ key: 'letter', letter: 'M' });
+      } else if (code === 'KeyH') {
+        this.#listener?.onKeyDown({ key: 'letter', letter: 'H' });
+      } else if (code === 'KeyI') {
+        this.#listener?.onKeyDown({ key: 'letter', letter: 'I' });
+      } else if (code === 'Backspace') {
+        this.#listener?.onKeyDown({ key: 'backspace' });
+      } else if (code.startsWith('Digit')) {
+        const digit = Number(event.code.slice('Digit'.length));
+        this.#listener?.onKeyDown({ key: 'digit', digit: digit });
+      }
+    });
 
-    this.#canvasElement.onmousedown = (evt: MouseEvent) => {
-      fn(
-        {
-          mode: 'button',
-          state: 'down',
-          button: evt.button === 2 ? 'secondary' : 'primary',
-        },
-        getPos(evt)
-      );
-    };
+    document.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+    });
 
-    this.#canvasElement.onmouseup = (evt: MouseEvent) => {
-      fn(
-        {
-          mode: 'button',
-          state: 'up',
-          button: evt.button === 2 ? 'secondary' : 'primary',
-        },
-        getPos(evt)
-      );
-    };
+    this.#canvas.addEventListener('mousedown', (e) => {
+      const { x, y } = getPos(e.clientX, e.clientY);
+      this.#listener?.onStartDrag(x, y, e.buttons === 1);
+    });
 
-    this.#canvasElement.onmouseenter = (evt: MouseEvent) => {
-      fn(
-        {
-          mode: 'boundary',
-          boundary: 'enter',
-        },
-        getPos(evt)
-      );
-    };
+    this.#canvas.addEventListener('mouseup', (e) => {
+      this.#listener?.onEndDrag();
+    });
 
-    this.#canvasElement.onmouseleave = (evt: MouseEvent) => {
-      fn(
-        {
-          mode: 'boundary',
-          boundary: 'exit',
-        },
-        getPos(evt)
-      );
-    };
+    this.#canvas.addEventListener('mousemove', (e) => {
+      const { x, y } = getPos(e.clientX, e.clientY);
+      this.#listener?.onDrag(x, y, e.buttons === 1);
+    });
 
-    this.#canvasElement.onmousemove = (evt: MouseEvent) => {
-      fn(
-        {
-          mode: 'move',
-        },
-        getPos(evt)
-      );
-    };
+    this.#canvas.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      const { x, y } = getPos(e.touches[0].clientX, e.touches[0].clientY);
+      this.#listener?.onStartDrag(x, y, e.touches.length === 1);
+    });
+
+    this.#canvas.addEventListener(
+      'touchmove',
+      (e) => {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        const { x, y } = getPos(e.touches[0].clientX, e.touches[0].clientY);
+        this.#listener?.onDrag(x, y, e.touches.length === 1);
+      },
+      { passive: false }
+    );
+
+    this.#canvas.addEventListener('touchend', (e) => {
+      this.#listener?.onEndDrag();
+    });
   }
 }

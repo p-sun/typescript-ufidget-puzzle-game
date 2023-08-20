@@ -1,27 +1,20 @@
 import Vec2 from '../GenericModels/Vec2';
-import { ICanvas, CanvasKeyEvent, CanvasMouseEvent } from './ICanvas';
+import { ICanvas, CanvasKeyEvent, CanvasListener } from './ICanvas';
 
 export interface Runnable {
   run(fps: number): void;
 }
 
-export default abstract class Game implements Runnable {
+export default abstract class Game implements Runnable, CanvasListener {
   abstract onUpdate(): void;
   abstract onRender(canvas: ICanvas): void;
-  abstract onKeyDown(event: CanvasKeyEvent): void;
-  abstract onMouseEvent(event: CanvasMouseEvent, pos: Vec2): void;
 
   protected readonly canvas: ICanvas;
   protected fps: number = 60;
 
   constructor(canvas: ICanvas) {
     this.canvas = canvas;
-    this.canvas.setKeyDownListener((event) => {
-      this.onKeyDown(event);
-    });
-    this.canvas.setMouseListener((evt, pos) => {
-      this.onMouseEvent(evt, pos);
-    });
+    this.canvas.setListener(this);
   }
 
   run(fps: number = 60) {
@@ -31,4 +24,10 @@ export default abstract class Game implements Runnable {
       this.onRender(this.canvas);
     }, 1000 / fps);
   }
+
+  // CanvasListener
+  onStartDrag(x: number, y: number, isLeft: boolean): void {}
+  onEndDrag(): void {}
+  onDrag(x: number, y: number, isLeft: boolean): void {}
+  onKeyDown(key: CanvasKeyEvent): void {}
 }

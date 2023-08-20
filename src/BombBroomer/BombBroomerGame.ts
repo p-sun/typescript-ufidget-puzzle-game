@@ -1,18 +1,12 @@
 import Game from '../GenericGame/Game';
 import GridRenderer from '../GenericGame/GridRenderer';
-import {
-  ICanvas,
-  CanvasKeyEvent,
-  CanvasMouseEvent,
-} from '../GenericGame/ICanvas';
+import { ICanvas, CanvasKeyEvent } from '../GenericGame/ICanvas';
 import { randomIntInRange } from '../GenericGame/Utils';
 import Color from '../GenericModels/Color';
 import { GridPosition, GridSize } from '../GenericModels/Grid';
 import Vec2 from '../GenericModels/Vec2';
 
-type CellData =
-  | { kind: 'flag'; count: number }
-  | { kind: 'covered' | 'cleared' };
+type CellData = { kind: 'flag'; count: number } | { kind: 'covered' | 'cleared' };
 
 export default class BombBroomer extends Game {
   // Game Logic
@@ -129,15 +123,9 @@ export default class BombBroomer extends Game {
         });
 
         if (!this.#hasBombs[row][column] && numberOfBombs !== 0) {
-          const color = [
-            Color.blue,
-            Color.green,
-            Color.red,
-            Color.magenta,
-            Color.orange,
-            Color.yellow,
-            Color.white,
-          ][numberOfBombs - 1];
+          const color = [Color.blue, Color.green, Color.red, Color.magenta, Color.orange, Color.yellow, Color.white][
+            numberOfBombs - 1
+          ];
           canvas.drawText({
             text: numberOfBombs.toString(),
             position: rect.midpoint,
@@ -154,17 +142,12 @@ export default class BombBroomer extends Game {
 
   onKeyDown(event: CanvasKeyEvent) {}
 
-  onMouseEvent(event: CanvasMouseEvent, pos: Vec2) {
-    if (event.mode === 'button' && event.state === 'down') {
-      const cellPos = this.#gridRenderer.cellAtPosition(pos);
-
-      if (event.button === 'primary') {
-        this.#clearCell(cellPos);
-      }
-    }
+  onStartDrag(x: number, y: number, isLeft: boolean) {
+    const cellPos = this.#gridRenderer.cellAtPosition(new Vec2(x, y));
+    this.clearCell(cellPos);
   }
 
-  #clearCell(cellPos: GridPosition) {
+  private clearCell(cellPos: GridPosition) {
     let visitedLocations = new Map<number, Set<number>>();
 
     let stack: GridPosition[] = [cellPos];
@@ -189,16 +172,8 @@ export default class BombBroomer extends Game {
         const row = pos.row + dr;
         const column = pos.column + dc;
 
-        if (
-          row >= 0 &&
-          column >= 0 &&
-          row < this.rowCount &&
-          column < this.columnCount
-        ) {
-          if (
-            !this.#numberOfBombsNeighboringCell({ row, column }) &&
-            !visitedLocations.get(row)?.has(column)
-          ) {
+        if (row >= 0 && column >= 0 && row < this.rowCount && column < this.columnCount) {
+          if (!this.#numberOfBombsNeighboringCell({ row, column }) && !visitedLocations.get(row)?.has(column)) {
             let s = visitedLocations.get(row);
             if (!s) {
               s = new Set<number>();

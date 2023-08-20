@@ -1,5 +1,5 @@
 import Game from '../GenericGame/Game';
-import { CanvasKeyEvent, CanvasMouseEvent, ICanvas } from '../GenericGame/ICanvas';
+import { CanvasKeyEvent, ICanvas } from '../GenericGame/ICanvas';
 import Color from '../GenericModels/Color';
 import Vec2 from '../GenericModels/Vec2';
 import { TrianglesGameLogic } from './models/TrianglesGameLogic';
@@ -35,7 +35,7 @@ export default class TrianglesGame extends Game {
 
   onRender(canvas: ICanvas) {}
 
-  onKeyDown(event: CanvasKeyEvent) {
+  onKeyDown(event: CanvasKeyEvent): void {
     if (event.key === 'space') {
       this.generatePattern();
     } else if (event.key === 'letter' && event.letter === 'H') {
@@ -46,8 +46,6 @@ export default class TrianglesGame extends Game {
       this.#renderer.render(this.canvas, this.#logic);
     }
   }
-
-  onMouseEvent(event: CanvasMouseEvent) {}
 
   private generatePattern() {
     this.#logic.generatePattern();

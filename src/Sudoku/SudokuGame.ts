@@ -1,10 +1,6 @@
 import Game from '../GenericGame/Game';
 import GridRenderer from '../GenericGame/GridRenderer';
-import {
-  CanvasKeyEvent,
-  CanvasMouseEvent,
-  ICanvas,
-} from '../GenericGame/ICanvas';
+import { CanvasKeyEvent, ICanvas } from '../GenericGame/ICanvas';
 import Color from '../GenericModels/Color';
 import Vec2 from '../GenericModels/Vec2';
 import SudokuBoard, { CellBrush } from './Board';
@@ -98,27 +94,22 @@ export default class SudokuGame extends Game {
     }
   }
 
-  onMouseEvent(event: CanvasMouseEvent, pos: Vec2) {
+  onStartDrag(x: number, y: number, isLeft: boolean) {
     if (this.#board.isSolved()) {
       return;
     }
 
-    if (
-      event.mode === 'button' &&
-      event.state === 'down' &&
-      event.button === 'primary'
-    ) {
-      if (this.#grid.rect.contains(pos)) {
-        const gridPos = this.#grid.cellAtPosition(pos);
-        this.#board = this.#board.withBrushAppliedToCell(gridPos, this.#brush);
-      } else if (this.#numberPicker.rect.contains(pos)) {
-        const gridPos = this.#numberPicker.cellAtPosition(pos);
-        const index =
-          gridPos.row * this.#numberPicker.columnCount + gridPos.column;
-        const digit = this.#board.digitSet[index];
+    const pos = new Vec2(x, y);
 
-        this.#brush.digit = digit;
-      }
+    if (this.#grid.rect.contains(pos)) {
+      const gridPos = this.#grid.cellAtPosition(pos);
+      this.#board = this.#board.withBrushAppliedToCell(gridPos, this.#brush);
+    } else if (this.#numberPicker.rect.contains(pos)) {
+      const gridPos = this.#numberPicker.cellAtPosition(pos);
+      const index = gridPos.row * this.#numberPicker.columnCount + gridPos.column;
+      const digit = this.#board.digitSet[index];
+
+      this.#brush.digit = digit;
     }
   }
 
@@ -151,14 +142,9 @@ export default class SudokuGame extends Game {
 
     this.canvas.drawText({
       text: 'Delete',
-      position: this.#numberPicker.rect
-        .convertNormalizedPosition(new Vec2(0.5, 1))
-        .mapY((y) => y + 0.5 * cellDim),
+      position: this.#numberPicker.rect.convertNormalizedPosition(new Vec2(0.5, 1)).mapY((y) => y + 0.5 * cellDim),
       attributes: {
-        color:
-          this.#brush.digit === undefined
-            ? new Color(1, 0.7, 0.7)
-            : Color.grey(0.3),
+        color: this.#brush.digit === undefined ? new Color(1, 0.7, 0.7) : Color.grey(0.3),
         fontSize: 24,
       },
       normalizedAnchorOffset: {
@@ -223,9 +209,7 @@ export default class SudokuGame extends Game {
       }
 
       if (data.value !== undefined) {
-        const pos = this.#grid
-          .cellContentRectAtPosition(position)
-          .midpoint.roundToIntegers();
+        const pos = this.#grid.cellContentRectAtPosition(position).midpoint.roundToIntegers();
         this.canvas.drawTextAtPosition(SudokuGame.#glyphs[data.value], pos, {
           fontSize: 24,
           color: data.locked ? Color.blue : Color.black,

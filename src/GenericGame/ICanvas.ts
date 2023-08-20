@@ -14,11 +14,6 @@ export type CanvasKeyEvent =
   | { key: 'letter'; letter: 'E' | 'M' | 'H' | 'I' }
   | { key: 'digit'; digit: number };
 
-export type CanvasMouseEvent =
-  | { mode: 'move' }
-  | { mode: 'boundary'; boundary: 'enter' | 'exit' }
-  | { mode: 'button'; state: 'up' | 'down'; button: 'primary' | 'secondary' };
-
 export type LineOptions = {
   start: Vec2;
   end: Vec2;
@@ -63,6 +58,13 @@ export type TextOptions = {
   background?: { color: Color; alpha?: number; padding?: number };
 };
 
+export interface CanvasListener {
+  onStartDrag: (x: number, y: number, isLeft: boolean) => void;
+  onEndDrag: () => void;
+  onDrag: (x: number, y: number, isLeft: boolean) => void;
+  onKeyDown: (key: CanvasKeyEvent) => void;
+}
+
 export interface ICanvas {
   get size(): Vec2;
   set size(newSize: Vec2);
@@ -93,8 +95,6 @@ export interface ICanvas {
   ): void;
 
   // Listen for Input
-  setKeyDownListener(fn: (key: CanvasKeyEvent) => void): void;
-  unsetKeyDownListener(): void;
-  setMouseListener(fn: (event: CanvasMouseEvent, pos: Vec2) => void): void;
-  unsetMouseListener(): void;
+  setListener(listener: CanvasListener): void;
+  unsetListener(): void;
 }
