@@ -55,6 +55,10 @@ export default class TrianglesGame extends Game {
     }
   }
 
+  onStartDrag(x: number, y: number, isLeft: boolean): void {
+    this.generatePattern();
+  }
+
   private generatePattern() {
     this.#logic.generatePattern();
     this.#renderer.render(this.canvas, this.#logic);
