@@ -1,7 +1,7 @@
-import GridRenderer from '../../GenericGame/GridRenderer';
-import { ICanvas } from '../../GenericGame/ICanvas';
-import Color from '../../GenericModels/Color';
-import Vec2 from '../../GenericModels/Vec2';
+import GridRenderer from '../../../GenericGame/GridRenderer';
+import { ICanvas } from '../../../GenericGame/ICanvas';
+import Color from '../../../GenericModels/Color';
+import Vec2 from '../../../GenericModels/Vec2';
 import Fruit from '../Models/Fruit';
 
 export type FruitRenderConfig = {

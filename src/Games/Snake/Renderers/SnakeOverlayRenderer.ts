@@ -1,6 +1,6 @@
-import { ICanvas } from '../../GenericGame/ICanvas';
-import Color from '../../GenericModels/Color';
-import Vec2 from '../../GenericModels/Vec2';
+import { ICanvas } from '../../../GenericGame/ICanvas';
+import Color from '../../../GenericModels/Color';
+import Vec2 from '../../../GenericModels/Vec2';
 import { SnakePlayStatus } from '../SnakeGame';
 
 export type SnakeOverlayConfig = {
@@ -25,18 +25,13 @@ export default class SnakeOverlayRenderer {
     }
   }
 
-  #getOverlayTexts(
-    playStatus: SnakePlayStatus,
-    snakeLength: number
-  ): SnakeOverlayTexts | undefined {
+  #getOverlayTexts(playStatus: SnakePlayStatus, snakeLength: number): SnakeOverlayTexts | undefined {
     if (playStatus === 'playing') {
       return undefined;
     }
 
     let texts: SnakeOverlayTexts = {
-      pressSpaceText: `Press [space] to ${
-        playStatus === 'lost' ? 're' : ''
-      }start!`,
+      pressSpaceText: `Press [space] to ${playStatus === 'lost' ? 're' : ''}start!`,
     };
 
     if (playStatus === 'lost') {

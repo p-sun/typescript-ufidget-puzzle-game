@@ -1,5 +1,5 @@
-import Rect from '../../GenericModels/Rect';
-import Vec2 from '../../GenericModels/Vec2';
+import Rect from '../../../GenericModels/Rect';
+import Vec2 from '../../../GenericModels/Vec2';
 import { TriangleRotation } from '../models/TrianglesGameLogic';
 
 // Corner in Rectangle in Canvas

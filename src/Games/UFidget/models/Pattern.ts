@@ -1,4 +1,4 @@
-import { GridPosition } from '../../GenericModels/Grid';
+import { GridPosition } from '../../../GenericModels/Grid';
 import { FoldDirection, FoldResult, Triangle, oppositeRotation } from './TrianglesGameLogic';
 import { assert } from 'console';
 

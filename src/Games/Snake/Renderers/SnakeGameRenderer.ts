@@ -1,8 +1,8 @@
-import GridRenderer, { GridRenderConfig } from '../../GenericGame/GridRenderer';
-import { ICanvas } from '../../GenericGame/ICanvas';
-import Color from '../../GenericModels/Color';
-import { GridSize } from '../../GenericModels/Grid';
-import Vec2 from '../../GenericModels/Vec2';
+import GridRenderer, { GridRenderConfig } from '../../../GenericGame/GridRenderer';
+import { ICanvas } from '../../../GenericGame/ICanvas';
+import Color from '../../../GenericModels/Color';
+import { GridSize } from '../../../GenericModels/Grid';
+import Vec2 from '../../../GenericModels/Vec2';
 import SnakeGameLogic from '../Models/SnakeGameLogic';
 import FruitRenderer from './FruitRenderer';
 import SnakeOverlayRenderer from './SnakeOverlayRenderer';
@@ -53,10 +53,6 @@ export default class SnakeGameRenderer {
     this.#gridRenderer.render(canvas);
     this.#snakeRenderer.render(canvas, this.#gridRenderer, gameLogic.snake);
     this.#fruitRenderer.render(canvas, this.#gridRenderer, gameLogic.fruit);
-    this.#overlayRenderer.render(
-      canvas,
-      gameLogic.playStatus,
-      gameLogic.snake.length
-    );
+    this.#overlayRenderer.render(canvas, gameLogic.playStatus, gameLogic.snake.length);
   }
 }

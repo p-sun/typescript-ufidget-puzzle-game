@@ -1,4 +1,4 @@
-import { TextOptions } from '../../GenericGame/ICanvas';
+import { TextOptions } from '../../../GenericGame/ICanvas';
 import { CanvasStub } from './CanvasStub';
 import { createSnakeGame } from './SnakeTestData';
 
@@ -23,9 +23,7 @@ describe('test SnakeGame', () => {
       expect(drawTextFn).toBeCalledTimes(0);
       game.onUpdate();
       game.onRender(canvas);
-      expect(drawTextFn.mock.lastCall?.at(0)?.text).toEqual(
-        'Press [space] to start!'
-      );
+      expect(drawTextFn.mock.lastCall?.at(0)?.text).toEqual('Press [space] to start!');
     });
   });
 

@@ -1,22 +1,14 @@
-import { randomOrderArray } from '../GenericGame/Utils';
-import {
-  GridPosition,
-  GridPositionEqual,
-  GridPositionGenerateRandom,
-} from '../GenericModels/Grid';
+import { randomOrderArray } from '../../GenericGame/Utils';
+import { GridPosition, GridPositionEqual, GridPositionGenerateRandom } from '../../GenericModels/Grid';
 
-type CellData =
-  | { locked: true; value: number }
-  | { locked?: false; value?: number };
+type CellData = { locked: true; value: number } | { locked?: false; value?: number };
 
 export type CellBrush = { kind: 'solution'; digit?: number };
 
 export default class SudokuBoard {
   public readonly blockSize = 3;
   public readonly blockCount = 3;
-  public readonly digitSet: number[] = [
-    ...Array(this.blockSize * this.blockCount).keys(),
-  ];
+  public readonly digitSet: number[] = [...Array(this.blockSize * this.blockCount).keys()];
 
   public readonly rowCount = this.blockSize * this.blockCount;
   public readonly columnCount = this.blockSize * this.blockCount;
@@ -28,9 +20,7 @@ export default class SudokuBoard {
    */
 
   constructor(cellData?: CellData[]) {
-    this.cellData =
-      cellData ??
-      Array.from({ length: this.rowCount * this.columnCount }, () => ({}));
+    this.cellData = cellData ?? Array.from({ length: this.rowCount * this.columnCount }, () => ({}));
   }
 
   static withExampleData(data: (number | undefined)[]) {
@@ -120,16 +110,8 @@ export default class SudokuBoard {
     const { blockRow, blockColumn } = position;
     const { blockSize } = this;
 
-    for (
-      let row = blockRow * blockSize;
-      row < (blockRow + 1) * blockSize;
-      row++
-    ) {
-      for (
-        let column = blockColumn * blockSize;
-        column < (blockColumn + 1) * blockSize;
-        column++
-      ) {
+    for (let row = blockRow * blockSize; row < (blockRow + 1) * blockSize; row++) {
+      for (let column = blockColumn * blockSize; column < (blockColumn + 1) * blockSize; column++) {
         const p = { row, column };
         yield { position: p, data: this.at(p) };
       }
@@ -168,9 +150,7 @@ export default class SudokuBoard {
       }
     }
 
-    for (const { data, position } of this.cellsInBlock(
-      this.#cellBlockForPosition(pos)
-    )) {
+    for (const { data, position } of this.cellsInBlock(this.#cellBlockForPosition(pos))) {
       if (!GridPositionEqual(position, pos) && data.value === value) {
         return false;
       }
@@ -179,9 +159,7 @@ export default class SudokuBoard {
     return true;
   }
 
-  #cellsAreValid(
-    iterator: Iterable<{ position: GridPosition; data: CellData }>
-  ) {
+  #cellsAreValid(iterator: Iterable<{ position: GridPosition; data: CellData }>) {
     let indices = new Set<number>();
     for (const { data } of iterator) {
       if (data.value !== undefined) {
@@ -210,9 +188,7 @@ export default class SudokuBoard {
 
     for (let blockRow = 0; blockRow < this.blockCount; blockRow++) {
       for (let blockColumn = 0; blockColumn < this.blockCount; blockColumn++) {
-        if (
-          !this.#cellsAreValid(this.cellsInBlock({ blockRow, blockColumn }))
-        ) {
+        if (!this.#cellsAreValid(this.cellsInBlock({ blockRow, blockColumn }))) {
           return false;
         }
       }
@@ -226,10 +202,7 @@ export default class SudokuBoard {
   }
 
   #fillCount() {
-    return this.cellData.reduce(
-      (accum, data) => accum + (data.value === undefined ? 0 : 1),
-      0
-    );
+    return this.cellData.reduce((accum, data) => accum + (data.value === undefined ? 0 : 1), 0);
   }
 
   boardFilledIn() {
@@ -254,9 +227,7 @@ export default class SudokuBoard {
    * Enumerating Valid / Solved boards
    */
 
-  *#validBoardsFillingInNextEmptySpot(
-    lockCell?: boolean
-  ): Generator<SudokuBoard> {
+  *#validBoardsFillingInNextEmptySpot(lockCell?: boolean): Generator<SudokuBoard> {
     const emptySpot = this.#nextEmptyPosition();
 
     if (!emptySpot) {
@@ -298,9 +269,7 @@ export default class SudokuBoard {
       return undefined;
     }
 
-    return this.#linearIndexToGridPosition(
-      this.cellData.findIndex((d) => d.value === undefined)
-    );
+    return this.#linearIndexToGridPosition(this.cellData.findIndex((d) => d.value === undefined));
   }
 
   #validEntriesForOpenPosition(position: GridPosition): Set<number> {
@@ -320,9 +289,7 @@ export default class SudokuBoard {
       remove(data);
     }
 
-    for (const { data } of this.cellsInBlock(
-      this.#cellBlockForPosition(position)
-    )) {
+    for (const { data } of this.cellsInBlock(this.#cellBlockForPosition(position))) {
       remove(data);
     }
 
@@ -344,9 +311,7 @@ export default class SudokuBoard {
   #lockFilledCells() {
     return new SudokuBoard(
       this.cellData.map((data) => {
-        return data.value === undefined
-          ? {}
-          : { value: data.value, locked: true };
+        return data.value === undefined ? {} : { value: data.value, locked: true };
       })
     );
   }

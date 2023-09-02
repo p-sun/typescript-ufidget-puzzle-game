@@ -1,7 +1,7 @@
-import Game from '../GenericGame/Game';
-import { CanvasKeyEvent, ICanvas } from '../GenericGame/ICanvas';
-import Color from '../GenericModels/Color';
-import Vec2 from '../GenericModels/Vec2';
+import Game from '../../GenericGame/Game';
+import { CanvasKeyEvent, ICanvas } from '../../GenericGame/ICanvas';
+import Color from '../../GenericModels/Color';
+import Vec2 from '../../GenericModels/Vec2';
 import { TrianglesGameLogic } from './models/TrianglesGameLogic';
 import TrianglesGameRenderer from './renderers/TrianglesGameRenderer';
 import { printPatternDescription } from './utils/patternDescription';

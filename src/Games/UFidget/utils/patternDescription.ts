@@ -1,4 +1,4 @@
-import Color from '../../GenericModels/Color';
+import Color from '../../../GenericModels/Color';
 import { FoldDirection } from '../models/TrianglesGameLogic';
 
 export function printPatternDescription(

@@ -1,10 +1,10 @@
-import Game from '../GenericGame/Game';
-import GridRenderer from '../GenericGame/GridRenderer';
-import { ICanvas, CanvasKeyEvent } from '../GenericGame/ICanvas';
-import { randomIntInRange } from '../GenericGame/Utils';
-import Color from '../GenericModels/Color';
-import { GridPosition, GridSize } from '../GenericModels/Grid';
-import Vec2 from '../GenericModels/Vec2';
+import Game from '../../GenericGame/Game';
+import GridRenderer from '../../GenericGame/GridRenderer';
+import { ICanvas, CanvasKeyEvent } from '../../GenericGame/ICanvas';
+import { randomIntInRange } from '../../GenericGame/Utils';
+import Color from '../../GenericModels/Color';
+import { GridPosition, GridSize } from '../../GenericModels/Grid';
+import Vec2 from '../../GenericModels/Vec2';
 
 type CellData = { kind: 'flag'; count: number } | { kind: 'covered' | 'cleared' };
 

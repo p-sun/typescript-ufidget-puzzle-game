@@ -1,7 +1,7 @@
-import Game from '../GenericGame/Game';
-import { CanvasKeyEvent, ICanvas } from '../GenericGame/ICanvas';
-import { GridSize } from '../GenericModels/Grid';
-import Vec2 from '../GenericModels/Vec2';
+import Game from '../../GenericGame/Game';
+import { CanvasKeyEvent, ICanvas } from '../../GenericGame/ICanvas';
+import { GridSize } from '../../GenericModels/Grid';
+import Vec2 from '../../GenericModels/Vec2';
 import SnakeGameLogic from './Models/SnakeGameLogic';
 import SnakeGameRenderer from './Renderers/SnakeGameRenderer';
 

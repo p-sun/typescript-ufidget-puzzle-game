@@ -1,8 +1,8 @@
-import Game from '../GenericGame/Game';
-import GridRenderer from '../GenericGame/GridRenderer';
-import { CanvasKeyEvent, ICanvas } from '../GenericGame/ICanvas';
-import Color from '../GenericModels/Color';
-import Vec2 from '../GenericModels/Vec2';
+import Game from '../../GenericGame/Game';
+import GridRenderer from '../../GenericGame/GridRenderer';
+import { CanvasKeyEvent, ICanvas } from '../../GenericGame/ICanvas';
+import Color from '../../GenericModels/Color';
+import Vec2 from '../../GenericModels/Vec2';
 import SudokuBoard, { CellBrush } from './Board';
 
 const cellDim = 34;

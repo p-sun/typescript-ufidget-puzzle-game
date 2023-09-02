@@ -1,7 +1,7 @@
-import { ICanvas } from '../../GenericGame/ICanvas';
-import { Direction } from '../../GenericModels/Direction';
-import { GridPosition } from '../../GenericModels/Grid';
-import Vec2 from '../../GenericModels/Vec2';
+import { ICanvas } from '../../../GenericGame/ICanvas';
+import { Direction } from '../../../GenericModels/Direction';
+import { GridPosition } from '../../../GenericModels/Grid';
+import Vec2 from '../../../GenericModels/Vec2';
 import Fruit from '../Models/Fruit';
 import Snake from '../Models/Snake';
 import SnakeGameLogic from '../Models/SnakeGameLogic';
@@ -26,10 +26,7 @@ export function createSnakeGame(canvas: ICanvas) {
   return new SnakeGame(canvas, gridSize, Vec2.zero, gameLogic);
 }
 
-export function createSnake(options?: {
-  segmentsToAdd?: number;
-  direction?: Direction;
-}): Snake {
+export function createSnake(options?: { segmentsToAdd?: number; direction?: Direction }): Snake {
   /**
    *    h = head
    * c  0 1 2 3 4

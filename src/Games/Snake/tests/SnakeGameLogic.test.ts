@@ -1,4 +1,4 @@
-import { GridPosition, GridSize } from '../../GenericModels/Grid';
+import { GridPosition, GridSize } from '../../../GenericModels/Grid';
 import Fruit from '../Models/Fruit';
 import Snake from '../Models/Snake';
 import SnakeGameLogic from '../Models/SnakeGameLogic';

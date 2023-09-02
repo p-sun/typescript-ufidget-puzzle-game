@@ -1,8 +1,8 @@
-import GridRenderer from '../../GenericGame/GridRenderer';
-import { ICanvas } from '../../GenericGame/ICanvas';
-import Color from '../../GenericModels/Color';
-import { Direction, Vec2ForDirection } from '../../GenericModels/Direction';
-import Vec2 from '../../GenericModels/Vec2';
+import GridRenderer from '../../../GenericGame/GridRenderer';
+import { ICanvas } from '../../../GenericGame/ICanvas';
+import Color from '../../../GenericModels/Color';
+import { Direction, Vec2ForDirection } from '../../../GenericModels/Direction';
+import Vec2 from '../../../GenericModels/Vec2';
 import Snake from '../Models/Snake';
 
 export type SnakeRenderConfig = {
@@ -19,11 +19,7 @@ export default class SnakeRenderer {
 
     positions.forEach((pos, index) => {
       const percent = positions.length > 1 ? index / (positions.length - 1) : 1;
-      grid.fillCell(
-        canvas,
-        pos,
-        this.config.color.lerp(Color.black, percent * 0.5)
-      );
+      grid.fillCell(canvas, pos, this.config.color.lerp(Color.black, percent * 0.5));
     });
 
     grid.drawEllipseInCell(

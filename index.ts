@@ -1,13 +1,13 @@
-import BombBroomerGame from './src/BombBroomer/BombBroomerGame';
+import BombBroomerGame from './src/Games/BombBoomer/BombBroomerGame';
+import SnakeGame from './src/Games/Snake/SnakeGame';
+import SudokuGame from './src/Games/Sudoku/SudokuGame';
+import TrianglesGame from './src/Games/UFidget/TrianglesGame';
 import Game from './src/GenericGame/Game';
 import HTMLCanvas from './src/GenericGame/HTMLCanvas';
 import { ICanvas } from './src/GenericGame/ICanvas';
 import Color from './src/GenericModels/Color';
 import Vec2 from './src/GenericModels/Vec2';
 import EasingRenderer from './src/Playgrounds/EasingRenderer';
-import SnakeGame from './src/SnakeGame/SnakeGame';
-import SudokuGame from './src/Sudoku/SudokuGame';
-import TrianglesGame from './src/TrianglesGame/TrianglesGame';
 
 const Games: { [k: string]: (canvas: ICanvas) => Game } = {
   Snake: (canvas) => {

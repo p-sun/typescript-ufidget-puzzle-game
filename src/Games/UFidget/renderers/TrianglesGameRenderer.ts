@@ -1,9 +1,9 @@
-import GridRenderer, { GridRenderConfig } from '../../GenericGame/GridRenderer';
-import { ICanvas } from '../../GenericGame/ICanvas';
-import Color from '../../GenericModels/Color';
-import { GridSize } from '../../GenericModels/Grid';
-import Rect from '../../GenericModels/Rect';
-import Vec2 from '../../GenericModels/Vec2';
+import GridRenderer, { GridRenderConfig } from '../../../GenericGame/GridRenderer';
+import { ICanvas } from '../../../GenericGame/ICanvas';
+import Color from '../../../GenericModels/Color';
+import { GridSize } from '../../../GenericModels/Grid';
+import Rect from '../../../GenericModels/Rect';
+import Vec2 from '../../../GenericModels/Vec2';
 import { Triangle, TrianglesGameLogic } from '../models/TrianglesGameLogic';
 import { getTriangleVerts } from './TriangleRenderHelpers';
 

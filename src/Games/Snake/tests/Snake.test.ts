@@ -1,4 +1,4 @@
-import { GridSize } from '../../GenericModels/Grid';
+import { GridSize } from '../../../GenericModels/Grid';
 import { createSnake } from './SnakeTestData';
 
 describe('test snake length() and headPosition()', () => {
@@ -50,9 +50,7 @@ describe('test positions() and containsPosition()', () => {
       expect(snake.positions[2]).toMatchObject({ row: 1, column: 3 });
       expect(snake.positions[3]).toBeUndefined();
 
-      expect(
-        snake.containsPosition({ row: 2, column: 2 }, { skipHead: true })
-      ).toBe(false);
+      expect(snake.containsPosition({ row: 2, column: 2 }, { skipHead: true })).toBe(false);
 
       expect(snake.containsPosition({ row: 2, column: 2 })).toBe(true);
       expect(snake.containsPosition({ row: 1, column: 2 })).toBe(true);
@@ -63,10 +61,7 @@ describe('test positions() and containsPosition()', () => {
 
   describe('when changing the direction to the left, and multiple tick() happen', () => {
     it('should move left', () => {
-      const snake = createSnake({ direction: 'down' })
-        .tick()
-        .changeDirection('left')
-        .tick();
+      const snake = createSnake({ direction: 'down' }).tick().changeDirection('left').tick();
       /**
        *    h = head
        * c  0 1 2 3 4
@@ -86,9 +81,7 @@ describe('test positions() and containsPosition()', () => {
 
   describe('when snake is extended and ticked', () => {
     it('should grow in length by only 1', () => {
-      let snake = createSnake({ direction: 'up', segmentsToAdd: 0 })
-        .extend()
-        .tick();
+      let snake = createSnake({ direction: 'up', segmentsToAdd: 0 }).extend().tick();
       /**
        *    h = head
        * c  0 1 2 3 4
@@ -164,13 +157,7 @@ describe('test positions() and containsPosition()', () => {
 
 describe('when snake moves up out of bounds', () => {
   it('should have *    h = head indicies on the headPosition', () => {
-    const snake = createSnake({ direction: 'up' })
-      .tick()
-      .tick()
-      .changeDirection('left')
-      .tick()
-      .tick()
-      .tick();
+    const snake = createSnake({ direction: 'up' }).tick().tick().changeDirection('left').tick().tick().tick();
     /**
      *    h = head
      * c  0 1 2 3 4

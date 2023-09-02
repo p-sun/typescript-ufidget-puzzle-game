@@ -7,9 +7,9 @@ import {
   RectOptions,
   TextAttributes,
   TextOptions,
-} from '../../GenericGame/ICanvas';
-import Color from '../../GenericModels/Color';
-import Vec2 from '../../GenericModels/Vec2';
+} from '../../../GenericGame/ICanvas';
+import Color from '../../../GenericModels/Color';
+import Vec2 from '../../../GenericModels/Vec2';
 
 export class CanvasStub implements ICanvas {
   get size(): Vec2 {
