@@ -28,6 +28,14 @@ export default class TrianglesGame extends Game {
       triangleColors
     );
 
+    const resizeCanvas = () => {
+      const actualSize = canvasSize();
+      canvas.size = actualSize;
+      this.#renderer.setTotalSize(actualSize);
+      this.#renderer.render(canvas, this.#logic);
+    };
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
     this.generatePattern();
   }
 
@@ -53,5 +61,14 @@ export default class TrianglesGame extends Game {
 
     const { folds, startClockwise, layersCount } = this.#logic.pattern;
     printPatternDescription(folds, startClockwise, layersCount, this.#triangleColors);
+  }
+}
+
+function canvasSize() {
+  const container = document.getElementById('root')!;
+  if (container.clientWidth <= window.innerHeight - 280) {
+    return new Vec2(container.clientWidth, container.clientWidth);
+  } else {
+    return new Vec2(window.innerHeight - 280, window.innerHeight - 280);
   }
 }

@@ -77,6 +77,14 @@ export default class GridRenderer {
     return new Rect(this.config.origin, this.totalSize());
   }
 
+  setTotalSize(size: Vec2) {
+    const lineWidth = this.config.border.lineWidth;
+    const cellWidth = (size.x - lineWidth * (this.columnCount + 1)) / this.columnCount;
+    const cellHeight = (size.y - lineWidth * (this.rowCount + 1)) / this.rowCount;
+    const cellSize = Math.min(cellWidth, cellHeight);
+    this.config.cellSize = new Vec2(cellSize, cellSize);
+  }
+
   totalSize(): Vec2 {
     const { cellSize } = this.config;
     const lineWidth = this.config.border.lineWidth;

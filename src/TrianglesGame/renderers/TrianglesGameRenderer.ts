@@ -37,6 +37,11 @@ export default class TrianglesGameRenderer {
     this.toggleInstructions();
   }
 
+  setTotalSize(size: Vec2) {
+    this.#gridRenderer.config.border.lineWidth = fromNormalizedSize(3, size.y);
+    this.#gridRenderer.setTotalSize(size);
+  }
+
   toggleInstructions() {
     this.#showInstructions = !this.#showInstructions;
     this.#gridRenderer.config.border.lineColor = this.#showInstructions ? this.bgColor : this.lineColor;
@@ -85,7 +90,7 @@ export default class TrianglesGameRenderer {
       points: verts,
       stroke: {
         color: Color.black,
-        thickness: 4,
+        thickness: fromNormalized(4, canvas),
       },
       fillColor: triangleColor,
     });
@@ -106,32 +111,34 @@ export default class TrianglesGameRenderer {
       start: center.sub(dir),
       end: center.add(dir),
       color: Color.black,
-      thickness: 8,
+      thickness: fromNormalized(8, canvas),
     });
   }
 
-  private drawTexts(canvas: ICanvas, texts: string[], start: number, lineHeight: number) {
+  private drawTexts(canvas: ICanvas, texts: string[]) {
+    const multiplier = 80;
+    const startY = fromNormalized(0.5, canvas) * multiplier;
+    const lineHeight = fromNormalized(0.34, canvas) * multiplier;
+    const startX = fromNormalized(0.3, canvas) * multiplier;
+
     for (const [i, text] of texts.entries()) {
-      this.drawText(canvas, text, new Vec2(0.3, start + lineHeight * i));
+      this.drawText(canvas, text, new Vec2(startX, startY + lineHeight * i));
     }
   }
 
   private drawText(canvas: ICanvas, text: string, pos: Vec2) {
     canvas.drawText({
       text,
-      position: pos.componentMul(this.#gridRenderer.cellSize),
+      position: pos,
       background: { color: this.bgColor },
       attributes: {
         color: Color.white,
-        fontSize: 19,
+        fontSize: fromNormalized(19, canvas),
       },
     });
   }
 
   private drawInstructions(canvas: ICanvas) {
-    const start = 0.5;
-    const lineHeight = 0.34;
-
     let texts = [`* Press 'i' to toggle instructions.`, `* Press 'SPACE' to generate new pattern.`];
     if (this.#showInstructions) {
       texts.push(
@@ -155,7 +162,7 @@ export default class TrianglesGameRenderer {
         `     Start -> Up     Start -> Down                     Start -> Flat`
       );
     }
-    this.drawTexts(canvas, texts, start, lineHeight);
+    this.drawTexts(canvas, texts);
     if (this.#showInstructions) {
       this.drawTrianglesForInstructions(canvas);
     }
@@ -209,4 +216,12 @@ export default class TrianglesGameRenderer {
       this.drawTriangle(canvas, rectccw3_fold0, { rotation: 3, clockwise: false, index: 1 }, 3, green);
     }
   }
+}
+
+function fromNormalized(n: number, canvas: ICanvas): number {
+  return (n / 667) * canvas.size.y;
+}
+
+function fromNormalizedSize(n: number, size: number): number {
+  return (n / 667) * size;
 }
