@@ -17,11 +17,19 @@ export default class HTMLCanvas implements ICanvas {
   #canvas: HTMLCanvasElement;
   #listener: CanvasListener | undefined;
 
-  constructor(canvasElement: HTMLCanvasElement, size: Vec2) {
-    this.#canvas = canvasElement;
-    this.#context = canvasElement.getContext('2d') as CanvasRenderingContext2D;
+  constructor(canvas: HTMLCanvasElement, size: Vec2) {
+    this.#canvas = canvas;
+    this.#context = canvas.getContext('2d') as CanvasRenderingContext2D;
     this.#size = size;
     this.setupListeners();
+  }
+
+  setListener(listener: CanvasListener): void {
+    this.#listener = listener;
+  }
+
+  unsetListener(): void {
+    this.#listener = undefined;
   }
 
   get size(): Vec2 {
@@ -39,6 +47,7 @@ export default class HTMLCanvas implements ICanvas {
     this.#canvas.height = newSize.y * scale;
 
     this.#context.scale(scale, scale);
+    this.#canvas.focus();
   }
 
   static createInRootElement(rootElement: Element, size: Vec2 = Vec2.zero): HTMLCanvas {
@@ -50,14 +59,6 @@ export default class HTMLCanvas implements ICanvas {
 
   get midpoint(): Vec2 {
     return this.fromNormalizedCoordinate(new Vec2(0.5, 0.5));
-  }
-
-  setListener(listener: CanvasListener): void {
-    this.#listener = listener;
-  }
-
-  unsetListener(): void {
-    this.#listener = undefined;
   }
 
   fromNormalizedCoordinate(coord: Vec2): Vec2 {

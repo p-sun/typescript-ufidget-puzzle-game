@@ -94,7 +94,7 @@ function nextFoldResult(prevResult: FoldResult, fold: FoldDirection, index: numb
   const { rotation, clockwise } = triangle;
 
   if (fold === 0) {
-    const toAdd = gridDirectionWithNoFold(triangle);
+    const toAdd = gridDirectionWithFlatFold(triangle);
     return {
       pos: { layer, row: row + toAdd[0], column: column + toAdd[1] },
       triangle: {
@@ -117,7 +117,7 @@ function nextFoldResult(prevResult: FoldResult, fold: FoldDirection, index: numb
   }
 }
 
-function gridDirectionWithNoFold(triangle: Triangle) {
+function gridDirectionWithFlatFold(triangle: Triangle) {
   const { rotation, clockwise } = triangle;
 
   const up = [-1, 0] as [number, number];
