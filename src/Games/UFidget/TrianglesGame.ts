@@ -70,9 +70,6 @@ export default class TrianglesGame extends Game {
 
 function canvasSize() {
   const container = document.getElementById('root')!;
-  if (container.clientWidth <= window.innerHeight - 280) {
-    return new Vec2(container.clientWidth, container.clientWidth);
-  } else {
-    return new Vec2(window.innerHeight - 280, window.innerHeight - 280);
-  }
+  const size = Math.min(container.clientWidth, 1000);
+  return new Vec2(size, size);
 }
