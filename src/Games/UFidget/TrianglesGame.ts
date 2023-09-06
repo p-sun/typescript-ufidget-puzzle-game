@@ -15,7 +15,13 @@ export type TrianglesGameSettings = {
   gridSize: number;
 };
 
-export const TrianglesSets = {
+type TriangleSetInfo = {
+  tag: string;
+  triangleColors: Color[];
+  displayName: string;
+};
+
+export const TrianglesSets: Record<string, TriangleSetInfo> = {
   pinkBluePurpleGreen: {
     tag: 'pinkBluePurpleGreen',
     displayName: 'Pink-Blue-Purple-Green',
@@ -34,12 +40,6 @@ export const TrianglesSets = {
       .concat(Array.from({ length: 5 }, () => Color.fromHex(0xf2798f))) // pink
       .concat(Array.from({ length: 5 }, () => Color.fromHex(0x00c1ed))), // blue
   },
-} satisfies {
-  [key: string]: {
-    tag: string;
-    triangleColors: Color[];
-    displayName: string;
-  };
 };
 
 export type TrianglesTag = keyof typeof TrianglesSets;
