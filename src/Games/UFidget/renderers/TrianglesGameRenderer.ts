@@ -15,11 +15,12 @@ export default class TrianglesGameRenderer {
 
   private readonly bgColor = Color.fromHex(0x1f2129);
   private readonly lineColor = Color.fromHex(0x9ac1af);
+  public colors: Color[] = [];
 
-  constructor(canvas: ICanvas, public colors: Color[], gridSize: GridSize, cellSize: Vec2) {
+  constructor(canvas: ICanvas, gridSize: GridSize) {
     const gridConfig: GridRenderConfig = {
       origin: Vec2.zero,
-      cellSize: cellSize,
+      cellSize: new Vec2(0, 0),
       background: {
         mode: 'fill',
         color: this.bgColor,

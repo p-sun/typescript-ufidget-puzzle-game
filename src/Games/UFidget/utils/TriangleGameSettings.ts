@@ -1,18 +1,10 @@
-import { TrianglesTag, TrianglesSets } from '../TrianglesGame';
-
-const Difficulties = ['Easy', 'Hard'] as const;
-export type Difficulty = typeof Difficulties[number];
-
-export type TrianglesGameSettings = {
-  trianglesTag: TrianglesTag;
-  difficulty: Difficulty;
-};
+import { Difficulties, TrianglesGameSettings, TrianglesSets, TrianglesTag } from '../TrianglesGame';
 
 export function TriangleGameInputs(options: {
   settings: TrianglesGameSettings;
   generateNewPattern: () => void;
   toggleInstructions: () => void;
-  onChange: () => void;
+  onChange: (settings: TrianglesGameSettings) => void;
 }): (string | HTMLElement)[] {
   const { settings, onChange, generateNewPattern, toggleInstructions } = options;
 
@@ -31,9 +23,8 @@ export function TriangleGameInputs(options: {
     const set = TrianglesSets[key as TrianglesTag];
     inputs.push(
       createRadioInput(set.displayName, settings.trianglesTag === set.tag, (setChecked) => {
-        settings.trianglesTag = set.tag as TrianglesTag;
         setChecked(true);
-        onChange();
+        onChange({ ...settings, trianglesTag: set.tag as TrianglesTag });
       })
     );
   }
@@ -42,9 +33,8 @@ export function TriangleGameInputs(options: {
   for (const d of Difficulties) {
     inputs.push(
       createRadioInput(d, settings.difficulty === d, (setChecked) => {
-        settings.difficulty = d;
         setChecked(true);
-        onChange();
+        onChange({ ...settings, difficulty: d });
       })
     );
   }

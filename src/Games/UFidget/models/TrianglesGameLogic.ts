@@ -1,4 +1,4 @@
-import { Difficulty } from '../utils/TriangleGameSettings';
+import { Difficulty } from '../TrianglesGame';
 import { PatternPos, Pattern, PatternAPI } from './Pattern';
 
 export type Triangle = {
@@ -12,22 +12,29 @@ export type FoldDirection = -1 | 0 | 1;
 
 export type FoldResult = { pos: PatternPos; triangle: Triangle; fold: FoldDirection };
 
+type GameLogicConfig = { maxCount: number; gridSize: number; difficulty: Difficulty };
+
 export class TrianglesGameLogic {
-  readonly maxCount: number;
-  difficulty: Difficulty;
-  #pattern: Pattern;
+  #config: GameLogicConfig = { maxCount: 0, gridSize: 0, difficulty: 'Easy' };
+  #pattern: Pattern = new Pattern(0);
 
-  constructor(config: { maxTriangles: number; gridSize: number; difficulty: Difficulty }) {
-    const { maxTriangles, gridSize, difficulty } = config;
-    this.maxCount = maxTriangles;
-    this.difficulty = difficulty;
+  get maxCount(): number {
+    return this.#config.maxCount;
+  }
 
-    const newGridSize = gridSize <= 0 ? Math.ceil(this.maxCount / 2) * 2 + 1 : gridSize;
-    this.#pattern = new Pattern(newGridSize);
+  get difficulty(): Difficulty {
+    return this.#config.difficulty;
   }
 
   get pattern(): PatternAPI {
     return this.#pattern;
+  }
+
+  set config(c: GameLogicConfig) {
+    this.#config = c;
+
+    const newGridSize = c.gridSize <= 0 ? Math.ceil(this.maxCount / 2) * 2 + 1 : c.gridSize;
+    this.#pattern = new Pattern(newGridSize);
   }
 
   getCell(pos: PatternPos) {
