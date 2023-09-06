@@ -1,3 +1,4 @@
+import { Difficulty } from '../utils/TriangleGameSettings';
 import { PatternPos, Pattern, PatternAPI } from './Pattern';
 
 export type Triangle = {
@@ -13,11 +14,13 @@ export type FoldResult = { pos: PatternPos; triangle: Triangle; fold: FoldDirect
 
 export class TrianglesGameLogic {
   readonly maxCount: number;
+  difficulty: Difficulty;
   #pattern: Pattern;
 
-  constructor(config: { maxTriangles: number; gridSize: number }) {
-    const { maxTriangles, gridSize } = config;
+  constructor(config: { maxTriangles: number; gridSize: number; difficulty: Difficulty }) {
+    const { maxTriangles, gridSize, difficulty } = config;
     this.maxCount = maxTriangles;
+    this.difficulty = difficulty;
 
     const newGridSize = gridSize <= 0 ? Math.ceil(this.maxCount / 2) * 2 + 1 : gridSize;
     this.#pattern = new Pattern(newGridSize);
@@ -74,7 +77,7 @@ export class TrianglesGameLogic {
 
     let prevResult = this.#pattern.prevResult;
     let result = nextFoldResult(prevResult, fold, this.#pattern.length);
-    if (this.#pattern.canAddFoldResult(result)) {
+    if (this.#pattern.canAddFoldResult(result, this.difficulty)) {
       this.#pattern.addFoldResult(result);
       return true;
     }

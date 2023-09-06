@@ -1,4 +1,5 @@
 import { GridPosition } from '../../../GenericModels/Grid';
+import { TrianglesGameSettings } from '../utils/TriangleGameSettings';
 import { FoldDirection, FoldResult, Triangle, oppositeRotation } from './TrianglesGameLogic';
 import { assert } from 'console';
 
@@ -67,7 +68,7 @@ export class Pattern implements PatternAPI {
     this.#prevResult = undefined;
   }
 
-  canAddFoldResult(foldResult: FoldResult) {
+  canAddFoldResult(foldResult: FoldResult, difficulty: TrianglesGameSettings['difficulty']) {
     const { pos, triangle: triangleToAdd, fold } = foldResult;
     const { layer, row, column } = pos;
     if (layer < 0 || layer >= this.#layers.length) {
@@ -79,7 +80,7 @@ export class Pattern implements PatternAPI {
 
     // if EASY_MODE = true, for every layer from current layer to the end in fold direction.
     // This makes folding easier, but limits possibilities for patterns
-    const EASY_MODE = true; // CAN CHANGE THIS
+    const EASY_MODE = difficulty === 'Easy';
     const minLayer = EASY_MODE ? 0 : layer;
     const maxLayer = EASY_MODE ? this.#layers.length - 1 : layer;
     for (let l = layer; l >= minLayer && l <= maxLayer; fold === 0 ? (l = -99) : (l += fold)) {

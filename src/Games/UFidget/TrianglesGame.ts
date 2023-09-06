@@ -48,6 +48,7 @@ export default class TrianglesGame extends Game {
     this.#logic = new TrianglesGameLogic({
       maxTriangles: this.triangleColors().length,
       gridSize,
+      difficulty: this.#settings.difficulty,
     });
 
     this.#renderer = new TrianglesGameRenderer(
@@ -103,6 +104,7 @@ export default class TrianglesGame extends Game {
       onChange: () => {
         const triangleColors = TrianglesSets[this.#settings.trianglesTag].triangleColors;
         this.#renderer.colors = triangleColors;
+        this.#logic.difficulty = this.#settings.difficulty;
         this.createInputButtons();
         this.generatePattern();
       },
