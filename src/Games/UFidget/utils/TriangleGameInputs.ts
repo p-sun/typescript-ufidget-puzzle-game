@@ -22,8 +22,7 @@ export function TriangleGameInputs(options: {
   for (const key of Object.keys(TrianglesSets)) {
     const set = TrianglesSets[key as TrianglesTag];
     inputs.push(
-      createRadioInput(set.displayName, settings.trianglesTag === set.tag, (setChecked) => {
-        setChecked(true);
+      createRadioInput(set.displayName, settings.trianglesTag === set.tag, () => {
         if (settings.trianglesTag !== set.tag) {
           onChange({ ...settings, trianglesTag: set.tag as TrianglesTag });
         }
@@ -34,8 +33,7 @@ export function TriangleGameInputs(options: {
   inputs.push(createBreak());
   for (const d of Difficulties) {
     inputs.push(
-      createRadioInput(d, settings.difficulty === d, (setChecked) => {
-        setChecked(true);
+      createRadioInput(d, settings.difficulty === d, () => {
         if (settings.difficulty !== d) {
           onChange({ ...settings, difficulty: d });
         }
