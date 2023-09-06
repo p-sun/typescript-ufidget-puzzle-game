@@ -24,7 +24,9 @@ export function TriangleGameInputs(options: {
     inputs.push(
       createRadioInput(set.displayName, settings.trianglesTag === set.tag, (setChecked) => {
         setChecked(true);
-        onChange({ ...settings, trianglesTag: set.tag as TrianglesTag });
+        if (settings.trianglesTag !== set.tag) {
+          onChange({ ...settings, trianglesTag: set.tag as TrianglesTag });
+        }
       })
     );
   }
@@ -34,7 +36,9 @@ export function TriangleGameInputs(options: {
     inputs.push(
       createRadioInput(d, settings.difficulty === d, (setChecked) => {
         setChecked(true);
-        onChange({ ...settings, difficulty: d });
+        if (settings.difficulty !== d) {
+          onChange({ ...settings, difficulty: d });
+        }
       })
     );
   }
