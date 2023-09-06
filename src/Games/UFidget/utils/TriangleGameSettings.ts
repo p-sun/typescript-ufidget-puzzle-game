@@ -60,6 +60,7 @@ function createBreak() {
 function createButton(text: string, fn: (setText: (text: string) => void) => void) {
   let button = document.createElement('button');
   button.innerText = text;
+  button.style.padding = '8px';
 
   const setText = (text: string) => (button.innerText = text);
   button.onclick = () => fn(setText);
@@ -70,6 +71,7 @@ function createButton(text: string, fn: (setText: (text: string) => void) => voi
 function createCheckbox(text: string, checked: boolean, fn: (setChecked: (checked: boolean) => void) => void) {
   return createInput(text, checked, 'checkbox', fn);
 }
+
 function createRadioInput(text: string, checked: boolean, fn: (setChecked: (checked: boolean) => void) => void) {
   return createInput(text, checked, 'radio', fn);
 }
@@ -84,9 +86,6 @@ function createInput(
   checkbox.type = type;
   checkbox.checked = checked;
 
-  const setChecked = (checked: boolean) => (checkbox.checked = checked);
-  checkbox.onclick = () => fn(setChecked);
-
   const label = document.createElement('div');
   label.innerText = text;
 
@@ -96,8 +95,11 @@ function createInput(
   container.style.alignItems = 'center';
   container.style.columnGap = '2px';
   container.style.alignItems = 'start';
-
+  container.style.padding = '2px';
   container.appendChild(label);
+
+  const setChecked = (checked: boolean) => (checkbox.checked = checked);
+  container.onclick = () => fn(setChecked);
 
   return container;
 }
