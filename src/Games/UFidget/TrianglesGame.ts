@@ -4,7 +4,7 @@ import Color from '../../GenericModels/Color';
 import Vec2 from '../../GenericModels/Vec2';
 import { TrianglesGameLogic } from './models/TrianglesGameLogic';
 import TrianglesGameRenderer from './renderers/TrianglesGameRenderer';
-import { TriangleGameInputs } from './utils/TriangleGameSettings';
+import { TriangleGameInputs } from './utils/TriangleGameInputs';
 import { printPatternDescription } from './utils/patternDescription';
 
 export const Difficulties = ['Easy', 'Hard'] as const;
