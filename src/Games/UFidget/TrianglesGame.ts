@@ -21,9 +21,8 @@ type TriangleSetInfo = {
   displayName: string;
 };
 
-export const TrianglesSets: Record<string, TriangleSetInfo> = {
+export const TrianglesSets = embedKeyInProperty<TriangleSetInfo>()('tag', {
   pinkBluePurpleGreen: {
-    tag: 'pinkBluePurpleGreen',
     displayName: 'Pink-Blue-Purple-Green',
     triangleColors: ([] as Color[])
       .concat(Array.from({ length: 5 }, () => Color.fromHex(0xf2798f))) // pink
@@ -32,7 +31,6 @@ export const TrianglesSets: Record<string, TriangleSetInfo> = {
       .concat(Array.from({ length: 5 }, () => Color.fromHex(0xa7f205))), // green
   },
   bluePinkGreenPurple: {
-    tag: 'bluePinkGreenPurple',
     displayName: 'Purple-Green-Pink-Blue',
     triangleColors: ([] as Color[])
       .concat(Array.from({ length: 5 }, () => Color.fromHex(0xad59de))) // purple
@@ -40,7 +38,7 @@ export const TrianglesSets: Record<string, TriangleSetInfo> = {
       .concat(Array.from({ length: 5 }, () => Color.fromHex(0xf2798f))) // pink
       .concat(Array.from({ length: 5 }, () => Color.fromHex(0x00c1ed))), // blue
   },
-};
+});
 
 export type TrianglesTag = keyof typeof TrianglesSets;
 
@@ -137,3 +135,28 @@ function canvasSize() {
   const size = Math.min(container.clientWidth, 800);
   return new Vec2(size, size);
 }
+
+/* -------------------------------------------------------------------------- */
+/*                 Embed the key under a property in a record                 */
+/* -------------------------------------------------------------------------- */
+
+function embedKeyInProperty<Info extends Record<string, unknown>>() {
+  return <Property extends string, R extends Record<string, Omit<Info, Property>>>(k: Property, r: R) => {
+    const result = {};
+    for (const item of Object.keys(r)) {
+      result[item] = { ...r[item], [k]: item };
+    }
+    return result as { [K in keyof R]: R[K] & { [k in Property]: K } };
+  };
+}
+
+/* --------------------------------- Example -------------------------------- */
+const example = embedKeyInProperty<{ units: number }>()('displayName', {
+  apples: { units: 6 },
+  pears: { units: 3 },
+});
+type exampleExpected = {
+  apples: { units: number; displayName: 'apples' };
+  pears: { units: number; displayName: 'pears' };
+};
+const example_test: typeof example extends exampleExpected ? true : false = true;
