@@ -12,14 +12,11 @@ export default class TrianglesGameRenderer {
   darkenLowerLayers = false;
 
   #gridRenderer: GridRenderer;
-  #colors: Color[];
 
   private readonly bgColor = Color.fromHex(0x1f2129);
   private readonly lineColor = Color.fromHex(0x9ac1af);
 
-  constructor(canvas: ICanvas, gridSize: GridSize, cellSize: Vec2, colors: Color[]) {
-    this.#colors = colors;
-
+  constructor(canvas: ICanvas, public colors: Color[], gridSize: GridSize, cellSize: Vec2) {
     const gridConfig: GridRenderConfig = {
       origin: Vec2.zero,
       cellSize: cellSize,
@@ -40,6 +37,10 @@ export default class TrianglesGameRenderer {
   setTotalSize(size: Vec2) {
     this.#gridRenderer.config.border.lineWidth = fromNormalizedSize(3, size.y);
     this.#gridRenderer.setTotalSize(size);
+  }
+
+  get showInstructions(): boolean {
+    return this.#showInstructions;
   }
 
   toggleInstructions() {
@@ -81,7 +82,7 @@ export default class TrianglesGameRenderer {
     if (this.darkenLowerLayers && layersCount !== 1) {
       multipler = min + (layer * (1 - min)) / (layersCount - 1);
     }
-    return this.#colors[i % this.#colors.length].mul(multipler);
+    return this.colors[i % this.colors.length].mul(multipler);
   }
 
   private drawTriangle(canvas: ICanvas, rect: Rect, triangle: Triangle, trianglesCount: number, triangleColor: Color) {
@@ -172,9 +173,9 @@ export default class TrianglesGameRenderer {
     if (this.#showInstructions) {
       // Clockwise vs CounterClockwise
       const rectcw0 = this.#gridRenderer.cellContentRectAtPosition({ row: 4.2, column: 4.2 });
-      this.drawTriangle(canvas, rectcw0, { rotation: 1, clockwise: true, index: 0 }, 3, this.#colors[0]);
+      this.drawTriangle(canvas, rectcw0, { rotation: 1, clockwise: true, index: 0 }, 3, this.colors[0]);
       const rectccw0 = this.#gridRenderer.cellContentRectAtPosition({ row: 4.2, column: 6.8 });
-      this.drawTriangle(canvas, rectccw0, { rotation: 1, clockwise: false, index: 0 }, 3, this.#colors[0]);
+      this.drawTriangle(canvas, rectccw0, { rotation: 1, clockwise: false, index: 0 }, 3, this.colors[0]);
 
       const cwRow = 5.1;
       const indent = 0.6;
@@ -182,15 +183,15 @@ export default class TrianglesGameRenderer {
       const green = Color.fromHex(0xa7f205);
       // Start clockwise -> fold Up
       const rectcw1 = this.#gridRenderer.cellContentRectAtPosition({ row: cwRow, column: indent });
-      this.drawTriangle(canvas, rectcw1, { rotation: 1, clockwise: true, index: 0 }, 3, this.#colors[0]);
+      this.drawTriangle(canvas, rectcw1, { rotation: 1, clockwise: true, index: 0 }, 3, this.colors[0]);
       this.drawTriangle(canvas, rectcw1, { rotation: 2, clockwise: false, index: 1 }, 3, green);
       // Start clockwise -> fold Down
       const rectcw2 = this.#gridRenderer.cellContentRectAtPosition({ row: cwRow, column: indent + spacing });
       this.drawTriangle(canvas, rectcw2, { rotation: 2, clockwise: false, index: 1 }, 3, green);
-      this.drawTriangle(canvas, rectcw2, { rotation: 1, clockwise: true, index: 0 }, 3, this.#colors[0]);
+      this.drawTriangle(canvas, rectcw2, { rotation: 1, clockwise: true, index: 0 }, 3, this.colors[0]);
       // Start clockwise -> fold Flat
       const rectcw3 = this.#gridRenderer.cellContentRectAtPosition({ row: cwRow, column: indent + spacing * 2 });
-      this.drawTriangle(canvas, rectcw3, { rotation: 1, clockwise: true, index: 0 }, 3, this.#colors[0]);
+      this.drawTriangle(canvas, rectcw3, { rotation: 1, clockwise: true, index: 0 }, 3, this.colors[0]);
       const rectcw3_fold0 = this.#gridRenderer.cellContentRectAtPosition({
         row: cwRow,
         column: indent + spacing * 2 + 1,
@@ -200,15 +201,15 @@ export default class TrianglesGameRenderer {
       const ccwRow = 6.8;
       // Start ccw -> fold Up
       const rectccw1 = this.#gridRenderer.cellContentRectAtPosition({ row: ccwRow, column: indent });
-      this.drawTriangle(canvas, rectccw1, { rotation: 1, clockwise: false, index: 0 }, 3, this.#colors[0]);
+      this.drawTriangle(canvas, rectccw1, { rotation: 1, clockwise: false, index: 0 }, 3, this.colors[0]);
       this.drawTriangle(canvas, rectccw1, { rotation: 4, clockwise: true, index: 1 }, 3, green);
       // Start ccw -> fold Down
       const rectccw2 = this.#gridRenderer.cellContentRectAtPosition({ row: ccwRow, column: indent + spacing });
       this.drawTriangle(canvas, rectccw2, { rotation: 4, clockwise: true, index: 1 }, 3, green);
-      this.drawTriangle(canvas, rectccw2, { rotation: 1, clockwise: false, index: 0 }, 3, this.#colors[0]);
+      this.drawTriangle(canvas, rectccw2, { rotation: 1, clockwise: false, index: 0 }, 3, this.colors[0]);
       // Start ccw -> fold Flat
       const rectccw3 = this.#gridRenderer.cellContentRectAtPosition({ row: ccwRow, column: 5.6 });
-      this.drawTriangle(canvas, rectccw3, { rotation: 1, clockwise: false, index: 0 }, 3, this.#colors[0]);
+      this.drawTriangle(canvas, rectccw3, { rotation: 1, clockwise: false, index: 0 }, 3, this.colors[0]);
       const rectccw3_fold0 = this.#gridRenderer.cellContentRectAtPosition({
         row: ccwRow - 1,
         column: 5.6,

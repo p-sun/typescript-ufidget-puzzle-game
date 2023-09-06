@@ -4,28 +4,57 @@ import Color from '../../GenericModels/Color';
 import Vec2 from '../../GenericModels/Vec2';
 import { TrianglesGameLogic } from './models/TrianglesGameLogic';
 import TrianglesGameRenderer from './renderers/TrianglesGameRenderer';
+import { TriangleGameInputs, TrianglesGameSettings } from './utils/TriangleGameSettings';
 import { printPatternDescription } from './utils/patternDescription';
 
+export const TrianglesSets = {
+  pinkBluePurpleGreen: {
+    tag: 'pinkBluePurpleGreen',
+    displayName: 'Pink-Blue-Purple-Green',
+    triangleColors: ([] as Color[])
+      .concat(Array.from({ length: 5 }, () => Color.fromHex(0xf2798f))) // pink
+      .concat(Array.from({ length: 5 }, () => Color.fromHex(0x00c1ed))) // blue
+      .concat(Array.from({ length: 5 }, () => Color.fromHex(0xad59de))) // purple
+      .concat(Array.from({ length: 5 }, () => Color.fromHex(0xa7f205))), // green
+  },
+  bluePinkGreenPurple: {
+    tag: 'bluePinkGreenPurple',
+    displayName: 'Purple-Green-Pink-Blue',
+    triangleColors: ([] as Color[])
+      .concat(Array.from({ length: 5 }, () => Color.fromHex(0xad59de))) // purple
+      .concat(Array.from({ length: 5 }, () => Color.fromHex(0xa7f205))) // green
+      .concat(Array.from({ length: 5 }, () => Color.fromHex(0xf2798f))) // pink
+      .concat(Array.from({ length: 5 }, () => Color.fromHex(0x00c1ed))), // blue
+  },
+} satisfies {
+  [key: string]: {
+    tag: string;
+    triangleColors: Color[];
+    displayName: string;
+  };
+};
+
+export type TrianglesTag = keyof typeof TrianglesSets;
+
 export default class TrianglesGame extends Game {
-  #triangleColors: Color[];
   #renderer: TrianglesGameRenderer;
   #logic: TrianglesGameLogic;
+  #settings: TrianglesGameSettings = { trianglesTag: 'pinkBluePurpleGreen', difficulty: 'Easy' };
 
-  constructor(config: { canvas: ICanvas; cellSize: Vec2; gridSize: number; triangleColors: Color[] }) {
-    const { canvas, cellSize, gridSize, triangleColors } = config;
+  constructor(config: { canvas: ICanvas; cellSize: Vec2; gridSize: number }) {
+    const { canvas, cellSize, gridSize } = config;
     super(canvas);
 
-    this.#triangleColors = triangleColors;
     this.#logic = new TrianglesGameLogic({
-      maxTriangles: triangleColors.length,
+      maxTriangles: this.triangleColors().length,
       gridSize,
     });
 
     this.#renderer = new TrianglesGameRenderer(
       canvas,
+      this.triangleColors(),
       { rowCount: gridSize, columnCount: gridSize },
-      cellSize,
-      triangleColors
+      cellSize
     );
 
     const resizeCanvas = () => {
@@ -37,6 +66,8 @@ export default class TrianglesGame extends Game {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
     this.generatePattern();
+
+    this.createInputButtons();
   }
 
   onUpdate() {}
@@ -55,8 +86,29 @@ export default class TrianglesGame extends Game {
     }
   }
 
-  onStartDrag(x: number, y: number, isLeft: boolean): void {
-    this.generatePattern();
+  private createInputButtons() {
+    const inputDiv = document.getElementById('inputDiv') as HTMLCanvasElement;
+    const inputElements = TriangleGameInputs({
+      settings: this.#settings,
+      generateNewPattern: () => {
+        if (this.#renderer.showInstructions) {
+          this.#renderer.toggleInstructions();
+        }
+        this.generatePattern();
+      },
+      toggleInstructions: () => {
+        this.#renderer.toggleInstructions();
+        this.#renderer.render(this.canvas, this.#logic);
+      },
+      onChange: () => {
+        const triangleColors = TrianglesSets[this.#settings.trianglesTag].triangleColors;
+        this.#renderer.colors = triangleColors;
+        this.createInputButtons();
+        this.generatePattern();
+      },
+    });
+    inputDiv.innerHTML = '';
+    inputDiv.append(...inputElements);
   }
 
   private generatePattern() {
@@ -64,7 +116,11 @@ export default class TrianglesGame extends Game {
     this.#renderer.render(this.canvas, this.#logic);
 
     const { folds, startClockwise, layersCount } = this.#logic.pattern;
-    printPatternDescription(folds, startClockwise, layersCount, this.#triangleColors);
+    printPatternDescription(folds, startClockwise, layersCount, this.triangleColors());
+  }
+
+  private triangleColors() {
+    return TrianglesSets[this.#settings.trianglesTag].triangleColors;
   }
 }
 

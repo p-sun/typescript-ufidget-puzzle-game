@@ -5,7 +5,6 @@ import TrianglesGame from './src/Games/UFidget/TrianglesGame';
 import Game from './src/GenericGame/Game';
 import HTMLCanvas from './src/GenericGame/HTMLCanvas';
 import { ICanvas } from './src/GenericGame/ICanvas';
-import Color from './src/GenericModels/Color';
 import Vec2 from './src/GenericModels/Vec2';
 import EasingRenderer from './src/Playgrounds/EasingRenderer';
 
@@ -19,13 +18,7 @@ const Games: { [k: string]: (canvas: ICanvas) => Game } = {
   Sudoku: (canvas) => new SudokuGame(canvas),
   Triangles: (canvas) => {
     const cellSize = new Vec2(80, 80);
-    const triangleColors = ([] as Color[])
-      .concat(Array.from({ length: 5 }, () => Color.fromHex(0xf2798f))) // pink
-      .concat(Array.from({ length: 5 }, () => Color.fromHex(0x00c1ed))) // blue
-      .concat(Array.from({ length: 5 }, () => Color.fromHex(0xad59de))) // purple
-      .concat(Array.from({ length: 5 }, () => Color.fromHex(0xa7f205))); // green
-
-    return new TrianglesGame({ canvas, cellSize, gridSize: 8, triangleColors });
+    return new TrianglesGame({ canvas, cellSize, gridSize: 8 });
   },
 };
 
