@@ -41,6 +41,13 @@ export function TriangleGameInputs(options: {
     );
   }
 
+  inputs.push(createBreak());
+  inputs.push(
+    createCheckbox('Hint: Darken Lower Layers', settings.darkenLowerLayers, () =>
+      onChange({ ...settings, darkenLowerLayers: !settings.darkenLowerLayers })
+    )
+  );
+
   return inputs;
 }
 

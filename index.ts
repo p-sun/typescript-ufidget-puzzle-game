@@ -21,6 +21,7 @@ const Games: { [k: string]: (canvas: ICanvas) => Game } = {
       trianglesTag: 'pinkBluePurpleGreen',
       difficulty: 'Easy',
       gridSize: 8,
+      darkenLowerLayers: false,
     });
   },
 };

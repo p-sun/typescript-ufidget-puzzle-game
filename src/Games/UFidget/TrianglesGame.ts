@@ -13,6 +13,7 @@ export type TrianglesGameSettings = {
   trianglesTag: TrianglesTag;
   difficulty: Difficulty;
   gridSize: number;
+  darkenLowerLayers: boolean;
 };
 
 type TriangleSetInfo = {
@@ -71,8 +72,10 @@ export default class TrianglesGame extends Game {
   }
 
   private updateSettings(s: TrianglesGameSettings) {
+    const didChangeTriangleColors = this.#settings.trianglesTag !== s.trianglesTag;
     this.#settings = s;
     this.#renderer.colors = TrianglesSets[this.#settings.trianglesTag].triangleColors;
+    this.#renderer.darkenLowerLayers = s.darkenLowerLayers;
 
     const didChange = this.#logic.setConfig({
       difficulty: s.difficulty,
@@ -81,9 +84,10 @@ export default class TrianglesGame extends Game {
     });
     if (didChange) {
       this.generatePattern();
-    } else {
-      this.renderPattern();
+    } else if (didChangeTriangleColors) {
+      this.logPattern();
     }
+    this.#renderer.render(this.canvas, this.#logic);
 
     this.createInputButtons();
   }
@@ -128,12 +132,11 @@ export default class TrianglesGame extends Game {
 
   private generatePattern() {
     this.#logic.generatePattern();
-    this.renderPattern();
+    this.#renderer.render(this.canvas, this.#logic);
+    this.logPattern();
   }
 
-  private renderPattern() {
-    this.#renderer.render(this.canvas, this.#logic);
-
+  private logPattern() {
     const { folds, startClockwise, layersCount } = this.#logic.pattern;
     printPatternDescription(folds, startClockwise, layersCount, this.#renderer.colors);
   }
