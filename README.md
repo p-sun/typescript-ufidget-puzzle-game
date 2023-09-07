@@ -17,6 +17,15 @@ GitHub: https://github.com/p-sun/typescript-ufidget-puzzle-game
   <img src="https://github.com/p-sun/typescript-ufidget-puzzle-game/assets/9044578/0bb284c1-5454-4070-9163-9303d6625cd4.png" height="400">
 </div>
 
+# Features
+- "Easy", "Medium", "Hard" puzzle difficulties.
+- “Hint” button darkens the color for lower layers. This is an easy way to validate solutions.
+- Allows both sets of triangle colors of the U-Fidget toy.
+- Supports both desktop and mobile, as well as keyboard shortcuts.
+  
+https://github.com/p-sun/typescript-ufidget-puzzle-game/assets/9044578/fbbbb551-a2e9-4d90-8d41-394d7b6dea95
+
 # Local Installation
 
 To run locally, clone this repo, install npm and Node.js, then `npm install` and `npm start`.
+
