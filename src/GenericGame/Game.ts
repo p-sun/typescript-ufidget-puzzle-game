@@ -19,10 +19,19 @@ export default abstract class Game implements Runnable, CanvasListener {
 
   run(fps: number = 60) {
     this.fps = fps;
-    window.setInterval(() => {
-      this.onUpdate();
-      this.onRender(this.canvas);
-    }, 1000 / fps);
+
+    if (fps == 0) {
+      this.runOnce();
+    } else {
+      window.setInterval(() => {
+        this.runOnce();
+      }, 1000 / fps);
+    }
+  }
+
+  runOnce() {
+    this.onUpdate();
+    this.onRender(this.canvas);
   }
 
   // CanvasListener
