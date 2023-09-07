@@ -1,5 +1,5 @@
-import { Difficulty } from '../TrianglesGame';
 import { PatternPos, Pattern, PatternAPI } from './Pattern';
+import { TrianglesPlayerSettings } from './TrianglesPlayerSettings';
 
 export type Triangle = {
   rotation: TriangleRotation;
@@ -12,10 +12,10 @@ export type FoldDirection = -1 | 0 | 1;
 
 export type FoldResult = { pos: PatternPos; triangle: Triangle; fold: FoldDirection };
 
-type GameLogicConfig = { maxCount: number; gridSize: number; difficulty: Difficulty };
+type GameLogicConfig = TrianglesPlayerSettings['gameLogicConfig'];
 
 export class TrianglesGameLogic {
-  #config: GameLogicConfig = { maxCount: 0, gridSize: 0, difficulty: 'Medium' };
+  #config: GameLogicConfig = { difficulty: 'Medium', maxCount: -1, gridSize: -1 };
   #pattern: Pattern = new Pattern(0);
 
   get maxCount(): number {

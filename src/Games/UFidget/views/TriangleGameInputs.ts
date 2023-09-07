@@ -1,12 +1,11 @@
-import { Difficulties, TrianglesGameSettings, TrianglesSets, TrianglesTag } from '../TrianglesGame';
+import { TrianglesPlayerSettings, TrianglesTag, Difficulties, TrianglesSets } from '../models/TrianglesPlayerSettings';
 
 export function TriangleGameInputs(options: {
-  settings: TrianglesGameSettings;
+  settings: TrianglesPlayerSettings;
   generateNewPattern: () => void;
-  toggleInstructions: () => void;
-  onChange: (settings: TrianglesGameSettings) => void;
+  onChange: (settings: TrianglesPlayerSettings) => void;
 }): (string | HTMLElement)[] {
-  const { settings, onChange, generateNewPattern, toggleInstructions } = options;
+  const { settings, onChange, generateNewPattern } = options;
 
   let inputs: (string | HTMLElement)[] = [
     createBreak(),
@@ -14,7 +13,7 @@ export function TriangleGameInputs(options: {
       generateNewPattern();
     }),
     createButton('Toggle Instructions', () => {
-      toggleInstructions();
+      onChange(settings.withShowInstructions(!settings.showInstructions));
     }),
     createBreak(),
   ];
@@ -24,7 +23,7 @@ export function TriangleGameInputs(options: {
     inputs.push(
       createRadioInput(set.displayName, settings.trianglesTag === set.tag, () => {
         if (settings.trianglesTag !== set.tag) {
-          onChange({ ...settings, trianglesTag: set.tag as TrianglesTag });
+          onChange(settings.withTag(set.tag));
         }
       })
     );
@@ -35,7 +34,7 @@ export function TriangleGameInputs(options: {
     inputs.push(
       createRadioInput(d, settings.difficulty === d, () => {
         if (settings.difficulty !== d) {
-          onChange({ ...settings, difficulty: d });
+          onChange(settings.withDifficulty(d));
         }
       })
     );
@@ -44,7 +43,7 @@ export function TriangleGameInputs(options: {
   inputs.push(createBreak());
   inputs.push(
     createCheckbox('Hint: Darken Lower Layers', settings.darkenLowerLayers, () =>
-      onChange({ ...settings, darkenLowerLayers: !settings.darkenLowerLayers })
+      onChange(settings.withDarkenLowerLayers(!settings.darkenLowerLayers))
     )
   );
 

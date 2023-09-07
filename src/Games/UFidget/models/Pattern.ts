@@ -1,6 +1,6 @@
 import { GridPosition } from '../../../GenericModels/Grid';
-import { Difficulty, TrianglesGameSettings } from '../TrianglesGame';
 import { FoldDirection, FoldResult, Triangle, oppositeRotation } from './TrianglesGameLogic';
+import { Difficulty } from './TrianglesPlayerSettings';
 import { assert } from 'console';
 
 export type PatternPos = {
@@ -68,7 +68,7 @@ export class Pattern implements PatternAPI {
     this.#prevResult = undefined;
   }
 
-  canAddFoldResult(foldResult: FoldResult, difficulty: TrianglesGameSettings['difficulty']) {
+  canAddFoldResult(foldResult: FoldResult, difficulty: Difficulty) {
     const { pos, triangle: triangleToAdd, fold } = foldResult;
     const { layer, row, column } = pos;
     if (layer < 0 || layer >= this.#layers.length) {

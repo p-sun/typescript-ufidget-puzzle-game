@@ -8,14 +8,14 @@ import { Triangle, TrianglesGameLogic } from '../models/TrianglesGameLogic';
 import { getTriangleVerts } from './TriangleRenderHelpers';
 
 export default class TrianglesGameRenderer {
-  #showInstructions = true;
-  darkenLowerLayers = false;
-
-  #gridRenderer: GridRenderer;
+  public colors: Color[] = [];
 
   private readonly bgColor = Color.fromHex(0x1f2129);
   private readonly lineColor = Color.fromHex(0x9ac1af);
-  public colors: Color[] = [];
+
+  #gridRenderer: GridRenderer;
+  #darkenLowerLayers = false;
+  #showInstructions = false;
 
   constructor(canvas: ICanvas, gridSize: GridSize) {
     const gridConfig: GridRenderConfig = {
@@ -31,8 +31,6 @@ export default class TrianglesGameRenderer {
       },
     };
     this.#gridRenderer = new GridRenderer(gridSize, canvas, gridConfig);
-
-    this.toggleInstructions();
   }
 
   setTotalSize(size: Vec2) {
@@ -40,16 +38,15 @@ export default class TrianglesGameRenderer {
     this.#gridRenderer.setTotalSize(size);
   }
 
-  get showInstructions(): boolean {
-    return this.#showInstructions;
-  }
+  render(
+    canvas: ICanvas,
+    logic: TrianglesGameLogic,
+    config: { showInstructions: boolean; darkenLowerLayers: boolean }
+  ) {
+    this.#showInstructions = config.showInstructions;
+    this.#darkenLowerLayers = config.darkenLowerLayers;
 
-  toggleInstructions() {
-    this.#showInstructions = !this.#showInstructions;
     this.#gridRenderer.config.border.lineColor = this.#showInstructions ? this.bgColor : this.lineColor;
-  }
-
-  render(canvas: ICanvas, logic: TrianglesGameLogic) {
     this.#gridRenderer.render(canvas);
 
     if (!this.#showInstructions) {
@@ -80,7 +77,7 @@ export default class TrianglesGameRenderer {
     //    layer 2             1
     const min = 0.3;
     let multipler = 1;
-    if (this.darkenLowerLayers && layersCount !== 1) {
+    if (this.#darkenLowerLayers && layersCount !== 1) {
       multipler = min + (layer * (1 - min)) / (layersCount - 1);
     }
     return this.colors[i % this.colors.length].mul(multipler);

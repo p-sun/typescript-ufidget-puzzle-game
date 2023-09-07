@@ -1,62 +1,24 @@
 import Game from '../../GenericGame/Game';
 import { CanvasKeyEvent, ICanvas } from '../../GenericGame/ICanvas';
-import Color from '../../GenericModels/Color';
 import Vec2 from '../../GenericModels/Vec2';
 import { TrianglesGameLogic } from './models/TrianglesGameLogic';
+import { TrianglesPlayerSettings } from './models/TrianglesPlayerSettings';
 import TrianglesGameRenderer from './renderers/TrianglesGameRenderer';
-import { TriangleGameInputs } from './utils/TriangleGameInputs';
-import { embedKeyInProperty } from './utils/adt';
 import { printPatternDescription } from './utils/patternDescription';
-
-export const Difficulties = ['Easy', 'Medium', 'Hard'] as const;
-export type Difficulty = typeof Difficulties[number];
-export type TrianglesGameSettings = {
-  trianglesTag: TrianglesTag;
-  difficulty: Difficulty;
-  gridSize: number;
-  darkenLowerLayers: boolean;
-};
-
-type TriangleSetInfo = {
-  tag: string;
-  triangleColors: Color[];
-  displayName: string;
-};
-
-export const TrianglesSets = embedKeyInProperty<TriangleSetInfo>()('tag', {
-  pinkBluePurpleGreen: {
-    displayName: 'Pink-Blue-Purple-Green',
-    triangleColors: ([] as Color[])
-      .concat(Array.from({ length: 5 }, () => Color.fromHex(0xf2798f))) // pink
-      .concat(Array.from({ length: 5 }, () => Color.fromHex(0x00c1ed))) // blue
-      .concat(Array.from({ length: 5 }, () => Color.fromHex(0xad59de))) // purple
-      .concat(Array.from({ length: 5 }, () => Color.fromHex(0xa7f205))), // green
-  },
-  bluePinkGreenPurple: {
-    displayName: 'Purple-Green-Pink-Blue',
-    triangleColors: ([] as Color[])
-      .concat(Array.from({ length: 5 }, () => Color.fromHex(0xad59de))) // purple
-      .concat(Array.from({ length: 5 }, () => Color.fromHex(0xa7f205))) // green
-      .concat(Array.from({ length: 5 }, () => Color.fromHex(0xf2798f))) // pink
-      .concat(Array.from({ length: 5 }, () => Color.fromHex(0x00c1ed))), // blue
-  },
-});
-
-export type TrianglesTag = keyof typeof TrianglesSets;
+import { TriangleGameInputs } from './views/TriangleGameInputs';
 
 export default class TrianglesGame extends Game {
   #renderer: TrianglesGameRenderer;
   #logic: TrianglesGameLogic;
-  #settings: TrianglesGameSettings;
+  #settings: TrianglesPlayerSettings;
 
-  constructor(canvas: ICanvas, settings: TrianglesGameSettings) {
+  constructor(canvas: ICanvas, settings: TrianglesPlayerSettings) {
     super(canvas);
     this.#settings = settings;
-    const { gridSize } = settings;
 
     this.#renderer = new TrianglesGameRenderer(canvas, {
-      rowCount: gridSize,
-      columnCount: gridSize,
+      rowCount: settings.gridSize,
+      columnCount: settings.gridSize,
     });
 
     this.#logic = new TrianglesGameLogic();
@@ -66,30 +28,25 @@ export default class TrianglesGame extends Game {
       const actualSize = canvasSize();
       canvas.size = actualSize;
       this.#renderer.setTotalSize(actualSize);
-      this.#renderer.render(canvas, this.#logic);
+
+      this.renderAll();
     };
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
   }
 
-  private updateSettings(s: TrianglesGameSettings) {
+  private updateSettings(s: TrianglesPlayerSettings) {
     const didChangeTriangleColors = this.#settings.trianglesTag !== s.trianglesTag;
     this.#settings = s;
-    this.#renderer.colors = TrianglesSets[this.#settings.trianglesTag].triangleColors;
-    this.#renderer.darkenLowerLayers = s.darkenLowerLayers;
+    this.#renderer.colors = s.triangleColors;
 
-    const didChange = this.#logic.setConfig({
-      difficulty: s.difficulty,
-      maxCount: this.#renderer.colors.length,
-      gridSize: s.gridSize,
-    });
+    const didChange = this.#logic.setConfig(s.gameLogicConfig);
     if (didChange) {
-      this.generatePattern();
+      this.generateAndLogPattern();
     } else if (didChangeTriangleColors) {
       this.logPattern();
     }
-    this.#renderer.render(this.canvas, this.#logic);
-
+    this.renderAll();
     this.createInputButtons();
   }
 
@@ -99,41 +56,43 @@ export default class TrianglesGame extends Game {
 
   onKeyDown(event: CanvasKeyEvent): void {
     if (event.key === 'space') {
-      this.generatePattern();
+      this.generateAndLogPattern();
     } else if (event.key === 'letter' && event.letter === 'H') {
-      this.#renderer.darkenLowerLayers = !this.#renderer.darkenLowerLayers;
-      this.#renderer.render(this.canvas, this.#logic);
+      this.toggleDarkenLowerLayers();
     } else if (event.key === 'letter' && event.letter === 'I') {
-      this.#renderer.toggleInstructions();
-      this.#renderer.render(this.canvas, this.#logic);
+      this.toggleInstructions();
     }
+  }
+
+  private renderAll() {
+    this.#renderer.render(this.canvas, this.#logic, this.#settings.rendererConfig);
   }
 
   private createInputButtons() {
     const inputDiv = document.getElementById('inputDiv') as HTMLCanvasElement;
     const inputElements = TriangleGameInputs({
       settings: this.#settings,
-      generateNewPattern: () => {
-        if (this.#renderer.showInstructions) {
-          this.#renderer.toggleInstructions();
-        }
-        this.generatePattern();
-      },
-      toggleInstructions: () => {
-        this.#renderer.toggleInstructions();
-        this.#renderer.render(this.canvas, this.#logic);
-      },
-      onChange: (newSettings) => {
-        this.updateSettings(newSettings);
-      },
+      generateNewPattern: () => this.generateAndLogPattern(),
+      onChange: (newSettings) => this.updateSettings(newSettings),
     });
     inputDiv.innerHTML = '';
     inputDiv.append(...inputElements);
   }
 
-  private generatePattern() {
+  private toggleDarkenLowerLayers() {
+    this.#settings = this.#settings.withDarkenLowerLayers(!this.#settings.darkenLowerLayers);
+    this.renderAll();
+  }
+
+  private toggleInstructions() {
+    this.#settings = this.#settings.withShowInstructions(!this.#settings.showInstructions);
+    this.renderAll();
+  }
+
+  private generateAndLogPattern() {
+    this.#settings = this.#settings.withShowInstructions(false);
     this.#logic.generatePattern();
-    this.#renderer.render(this.canvas, this.#logic);
+    this.renderAll();
     this.logPattern();
   }
 

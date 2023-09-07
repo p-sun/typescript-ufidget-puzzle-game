@@ -2,6 +2,7 @@ import BombBroomerGame from './src/Games/BombBoomer/BombBroomerGame';
 import SnakeGame from './src/Games/Snake/SnakeGame';
 import SudokuGame from './src/Games/Sudoku/SudokuGame';
 import TrianglesGame from './src/Games/UFidget/TrianglesGame';
+import { TrianglesPlayerSettings } from './src/Games/UFidget/models/TrianglesPlayerSettings';
 import Game from './src/GenericGame/Game';
 import HTMLCanvas from './src/GenericGame/HTMLCanvas';
 import { ICanvas } from './src/GenericGame/ICanvas';
@@ -17,12 +18,14 @@ const Games: { [k: string]: (canvas: ICanvas) => Game } = {
   BombBroomer: (canvas) => new BombBroomerGame(canvas),
   Sudoku: (canvas) => new SudokuGame(canvas),
   Triangles: (canvas) => {
-    return new TrianglesGame(canvas, {
-      trianglesTag: 'pinkBluePurpleGreen',
-      difficulty: 'Medium',
-      gridSize: 8,
-      darkenLowerLayers: false,
-    });
+    return new TrianglesGame(
+      canvas,
+      new TrianglesPlayerSettings({
+        trianglesTag: 'pinkBluePurpleGreen',
+        difficulty: 'Medium',
+        gridSize: 8,
+      })
+    );
   },
 };
 
