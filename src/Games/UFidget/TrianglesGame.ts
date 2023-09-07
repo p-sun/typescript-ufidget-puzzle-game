@@ -7,7 +7,7 @@ import TrianglesGameRenderer from './renderers/TrianglesGameRenderer';
 import { TriangleGameInputs } from './utils/TriangleGameInputs';
 import { printPatternDescription } from './utils/patternDescription';
 
-export const Difficulties = ['Easy', 'Hard'] as const;
+export const Difficulties = ['Easy', 'Medium', 'Hard'] as const;
 export type Difficulty = typeof Difficulties[number];
 export type TrianglesGameSettings = {
   trianglesTag: TrianglesTag;
@@ -144,7 +144,7 @@ export default class TrianglesGame extends Game {
 
 function canvasSize() {
   const container = document.getElementById('root')!;
-  const size = Math.min(container.clientWidth, 800);
+  const size = Math.min(container.clientWidth, 680);
   return new Vec2(size, size);
 }
 

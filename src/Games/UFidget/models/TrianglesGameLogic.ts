@@ -15,7 +15,7 @@ export type FoldResult = { pos: PatternPos; triangle: Triangle; fold: FoldDirect
 type GameLogicConfig = { maxCount: number; gridSize: number; difficulty: Difficulty };
 
 export class TrianglesGameLogic {
-  #config: GameLogicConfig = { maxCount: 0, gridSize: 0, difficulty: 'Easy' };
+  #config: GameLogicConfig = { maxCount: 0, gridSize: 0, difficulty: 'Medium' };
   #pattern: Pattern = new Pattern(0);
 
   get maxCount(): number {
@@ -53,7 +53,7 @@ export class TrianglesGameLogic {
     do {
       this.startNewPattern();
       this.foldPatternUntilDone();
-    } while (this.#pattern.length !== this.maxCount || !this.#pattern.isValid());
+    } while (this.#pattern.length !== this.maxCount || !this.#pattern.isValid(this.#config.difficulty));
   }
 
   private startNewPattern() {

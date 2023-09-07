@@ -1,5 +1,5 @@
 import { GridPosition } from '../../../GenericModels/Grid';
-import { TrianglesGameSettings } from '../TrianglesGame';
+import { Difficulty, TrianglesGameSettings } from '../TrianglesGame';
 import { FoldDirection, FoldResult, Triangle, oppositeRotation } from './TrianglesGameLogic';
 import { assert } from 'console';
 
@@ -78,10 +78,11 @@ export class Pattern implements PatternAPI {
       return false; // row or column is out of bounds
     }
 
-    // When difficulty is `Easy`, for every layer from current layer to the end in fold direction.
-    // This makes folding easier, but limits possibilities for patterns
-    const minLayer = difficulty === 'Easy' ? 0 : layer;
-    const maxLayer = difficulty === 'Easy' ? this.#layers.length - 1 : layer;
+    // When 'easierFolds' is true, make folding easier, but limit possibilities for patterns,
+    // by ensuring the space is empty in every layer in the direction of the fold.
+    const easierFolds = difficulty === 'Easy' || difficulty === 'Medium';
+    const minLayer = easierFolds ? 0 : layer;
+    const maxLayer = easierFolds ? this.#layers.length - 1 : layer;
     for (let l = layer; l >= minLayer && l <= maxLayer; fold === 0 ? (l = -99) : (l += fold)) {
       const cell = this.#layers[l][row][column];
 
@@ -125,10 +126,44 @@ export class Pattern implements PatternAPI {
     this.#prevResult = foldResult;
   }
 
+  isValid(difficulty: Difficulty): boolean {
+    return this.#layers.length <= 5 && this.occupiesValidNumberOfCells(difficulty) && this.areAllTrianglesSupported();
+  }
+
+  private occupiesValidNumberOfCells(difficulty: Difficulty): boolean {
+    let occupiedCells: (true | null)[][] = this.createEmptyLayer(this.gridSize);
+    let totalCells = 0;
+
+    for (let l = 0; l < this.#layers.length; l++) {
+      for (let r = 0; r < this.gridSize; r++) {
+        for (let c = 0; c < this.gridSize; c++) {
+          const cell = this.#layers[l][r][c];
+          if (cell) {
+            if (occupiedCells[r][c] == null) {
+              occupiedCells[r][c] = true;
+              totalCells++;
+            }
+          }
+        }
+      }
+    }
+
+    if (totalCells < 5) {
+      return false;
+    } else if (difficulty === 'Easy') {
+      return totalCells >= 8;
+    } else if (difficulty === 'Medium') {
+      return totalCells <= 8;
+    } else if (difficulty === 'Hard') {
+      return totalCells <= 7;
+    }
+    throw new Error(`Invalid difficulty: ${difficulty}`);
+  }
+
   // Each triangle is supported when it has one of the following:
   // * That triangle is in the bottomost layer, 0. (supported by the table).
   // * That triangle is resting on a triangle in the layer directly below.
-  isValid(): boolean {
+  private areAllTrianglesSupported() {
     for (let l = 1; l < this.#layers.length; l++) {
       for (let r = 0; r < this.gridSize; r++) {
         for (let c = 0; c < this.gridSize; c++) {
@@ -145,13 +180,12 @@ export class Pattern implements PatternAPI {
         }
       }
     }
-
     return true;
   }
 
   private isTriangleSupported(triangle: Triangle, pos: PatternPos): boolean {
     const { layer, row, column } = pos;
-    assert(layer > 0);
+    if (layer === 0) return true;
 
     const cellBelow = this.#layers[layer - 1][row][column];
     if (cellBelow) {

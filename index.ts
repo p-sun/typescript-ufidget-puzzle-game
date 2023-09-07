@@ -19,7 +19,7 @@ const Games: { [k: string]: (canvas: ICanvas) => Game } = {
   Triangles: (canvas) => {
     return new TrianglesGame(canvas, {
       trianglesTag: 'pinkBluePurpleGreen',
-      difficulty: 'Easy',
+      difficulty: 'Medium',
       gridSize: 8,
       darkenLowerLayers: false,
     });
