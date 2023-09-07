@@ -27,18 +27,16 @@ export class TrianglesGameLogic {
   }
 
   setConfig(c: GameLogicConfig) {
-    const didChange =
+    if (
       this.#config.maxCount != c.maxCount ||
       this.#config.gridSize != c.gridSize ||
-      this.#config.difficulty != c.difficulty;
-
-    if (didChange) {
+      this.#config.difficulty != c.difficulty
+    ) {
       this.#config = c;
 
       const newGridSize = c.gridSize <= 0 ? Math.ceil(this.maxCount / 2) * 2 + 1 : c.gridSize;
       this.#pattern = new Pattern(newGridSize);
     }
-    return didChange;
   }
 
   getCell(pos: PatternPos) {
