@@ -3,7 +3,7 @@ import Vec2 from '../../../GenericModels/Vec2';
 import { TriangleRotation } from '../models/TrianglesGameLogic';
 
 // Corner in Rectangle in Canvas
-export type Corner = 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight';
+type Corner = 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight';
 function vertForCorner(c: Corner, rect: Rect) {
   if (c === 'topLeft') {
     return new Vec2(rect.minX, rect.minY);
