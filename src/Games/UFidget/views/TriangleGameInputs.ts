@@ -38,7 +38,6 @@ export function TriangleGameInputs(options: {
     createButton('New Pattern', options.generateNewPattern),
     createButton('Toggle Instructions', options.toggleInstructions),
     createBreak(),
-    createBreak(),
     ...triangleSetButtons,
     createBreak(),
     ...difficultyButtons,
