@@ -1,53 +1,50 @@
-import { TrianglesPlayerSettings, TrianglesTag, Difficulties, TrianglesSets } from '../models/TrianglesPlayerSettings';
+import {
+  TrianglesPlayerSettings,
+  TrianglesTag,
+  Difficulties,
+  TrianglesSets,
+  Difficulty,
+} from '../models/TrianglesPlayerSettings';
 
 export function TriangleGameInputs(options: {
   settings: TrianglesPlayerSettings;
   generateNewPattern: () => void;
-  onChange: (settings: TrianglesPlayerSettings) => void;
+  toggleInstructions: () => void;
+  toggleDarkenLowerLayers: () => void;
+  changeTrianglesTag: (tag: TrianglesTag) => void;
+  changeDifficulty: (difficulty: Difficulty) => void;
 }): (string | HTMLElement)[] {
-  const { settings, onChange, generateNewPattern } = options;
+  const { settings } = options;
 
-  let inputs: (string | HTMLElement)[] = [
-    createBreak(),
-    createButton('New Pattern', () => {
-      generateNewPattern();
-    }),
-    createButton('Toggle Instructions', () => {
-      onChange(settings.withShowInstructions(!settings.showInstructions));
-    }),
-    createBreak(),
-  ];
-
-  for (const key of Object.keys(TrianglesSets)) {
+  const triangleSetButtons = Object.keys(TrianglesSets).map((key) => {
     const set = TrianglesSets[key as TrianglesTag];
-    inputs.push(
-      createRadioInput(set.displayName, settings.trianglesTag === set.tag, () => {
-        if (settings.trianglesTag !== set.tag) {
-          onChange(settings.withTag(set.tag));
-        }
-      })
-    );
-  }
+    return createRadioInput(set.displayName, settings.trianglesTag === set.tag, () => {
+      if (settings.trianglesTag !== set.tag) {
+        options.changeTrianglesTag(set.tag);
+      }
+    });
+  });
 
-  inputs.push(createBreak());
-  for (const d of Difficulties) {
-    inputs.push(
-      createRadioInput(d, settings.difficulty === d, () => {
-        if (settings.difficulty !== d) {
-          onChange(settings.withDifficulty(d));
-        }
-      })
-    );
-  }
-
-  inputs.push(createBreak());
-  inputs.push(
-    createCheckbox('Hint: Darken Lower Layers', settings.darkenLowerLayers, () =>
-      onChange(settings.withDarkenLowerLayers(!settings.darkenLowerLayers))
-    )
+  const difficultyButtons = Difficulties.map((d) =>
+    createRadioInput(d, settings.difficulty === d, () => {
+      if (settings.difficulty !== d) {
+        options.changeDifficulty(d);
+      }
+    })
   );
 
-  return inputs;
+  return [
+    createBreak(),
+    createButton('New Pattern', options.generateNewPattern),
+    createButton('Toggle Instructions', options.toggleInstructions),
+    createBreak(),
+    createBreak(),
+    ...triangleSetButtons,
+    createBreak(),
+    ...difficultyButtons,
+    createBreak(),
+    createCheckbox('Hint: Darken Lower Layers', settings.darkenLowerLayers, options.toggleDarkenLowerLayers),
+  ];
 }
 
 function createDivider() {

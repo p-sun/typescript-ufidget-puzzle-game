@@ -2,7 +2,7 @@ import Game from '../../GenericGame/Game';
 import { CanvasKeyEvent, ICanvas } from '../../GenericGame/ICanvas';
 import Vec2 from '../../GenericModels/Vec2';
 import { TrianglesGameLogic } from './models/TrianglesGameLogic';
-import { TrianglesPlayerSettings } from './models/TrianglesPlayerSettings';
+import { Difficulty, TrianglesPlayerSettings, TrianglesTag } from './models/TrianglesPlayerSettings';
 import TrianglesGameRenderer from './renderers/TrianglesGameRenderer';
 import { printPatternDescription } from './utils/patternDescription';
 import { TriangleGameInputs } from './views/TriangleGameInputs';
@@ -15,39 +15,24 @@ export default class TrianglesGame extends Game {
   constructor(canvas: ICanvas, settings: TrianglesPlayerSettings) {
     super(canvas);
     this.#settings = settings;
-
+    this.#logic = new TrianglesGameLogic();
     this.#renderer = new TrianglesGameRenderer(canvas, {
       rowCount: settings.gridSize,
       columnCount: settings.gridSize,
     });
+    this.#renderer.colors = settings.triangleColors;
 
-    this.#logic = new TrianglesGameLogic();
     this.updateSettings(settings);
+    this.generateAndLogPattern();
 
     const resizeCanvas = () => {
       const actualSize = canvasSize();
       canvas.size = actualSize;
       this.#renderer.setTotalSize(actualSize);
-
       this.renderAll();
     };
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
-  }
-
-  private updateSettings(s: TrianglesPlayerSettings) {
-    const didChangeTriangleColors = this.#settings.trianglesTag !== s.trianglesTag;
-    this.#settings = s;
-    this.#renderer.colors = s.triangleColors;
-
-    const didChange = this.#logic.setConfig(s.gameLogicConfig);
-    if (didChange) {
-      this.generateAndLogPattern();
-    } else if (didChangeTriangleColors) {
-      this.logPattern();
-    }
-    this.renderAll();
-    this.createInputButtons();
   }
 
   onUpdate() {}
@@ -64,41 +49,68 @@ export default class TrianglesGame extends Game {
     }
   }
 
+  private updateSettings(newSettings: TrianglesPlayerSettings) {
+    this.#settings = newSettings;
+    this.#logic.setConfig(this.#settings.gameLogicConfig);
+    this.renderAll();
+    this.createSettingsButtons();
+  }
+
   private renderAll() {
     this.#renderer.render(this.canvas, this.#logic, this.#settings.rendererConfig);
   }
 
-  private createInputButtons() {
+  /* ------------------------------ User Features ----------------------------- */
+
+  private generateAndLogPattern() {
+    if (this.#settings.showInstructions) {
+      this.toggleInstructions();
+    }
+    this.#logic.generatePattern();
+    this.logPattern();
+    this.renderAll();
+  }
+
+  private changeDifficulty(difficulty: Difficulty) {
+    this.updateSettings(this.#settings.withDifficulty(difficulty));
+    this.generateAndLogPattern();
+  }
+
+  private changeTrianglesTag(tag: TrianglesTag) {
+    this.updateSettings(this.#settings.withTag(tag));
+
+    this.#renderer.colors = this.#settings.triangleColors;
+    this.logPattern();
+    this.renderAll();
+  }
+
+  private toggleDarkenLowerLayers() {
+    this.updateSettings(this.#settings.withDarkenLowerLayers(!this.#settings.darkenLowerLayers));
+  }
+
+  private toggleInstructions() {
+    this.updateSettings(this.#settings.withShowInstructions(!this.#settings.showInstructions));
+  }
+
+  /* ----------------------------- Visual Updates ----------------------------- */
+
+  private logPattern() {
+    const { folds, startClockwise, layersCount } = this.#logic.pattern;
+    printPatternDescription(folds, startClockwise, layersCount, this.#settings.triangleColors);
+  }
+
+  private createSettingsButtons() {
     const inputDiv = document.getElementById('inputDiv') as HTMLCanvasElement;
     const inputElements = TriangleGameInputs({
       settings: this.#settings,
       generateNewPattern: () => this.generateAndLogPattern(),
-      onChange: (newSettings) => this.updateSettings(newSettings),
+      toggleInstructions: () => this.toggleInstructions(),
+      toggleDarkenLowerLayers: () => this.toggleDarkenLowerLayers(),
+      changeTrianglesTag: (tag) => this.changeTrianglesTag(tag),
+      changeDifficulty: (difficulty) => this.changeDifficulty(difficulty),
     });
     inputDiv.innerHTML = '';
     inputDiv.append(...inputElements);
-  }
-
-  private toggleDarkenLowerLayers() {
-    this.#settings = this.#settings.withDarkenLowerLayers(!this.#settings.darkenLowerLayers);
-    this.renderAll();
-  }
-
-  private toggleInstructions() {
-    this.#settings = this.#settings.withShowInstructions(!this.#settings.showInstructions);
-    this.renderAll();
-  }
-
-  private generateAndLogPattern() {
-    this.#settings = this.#settings.withShowInstructions(false);
-    this.#logic.generatePattern();
-    this.renderAll();
-    this.logPattern();
-  }
-
-  private logPattern() {
-    const { folds, startClockwise, layersCount } = this.#logic.pattern;
-    printPatternDescription(folds, startClockwise, layersCount, this.#renderer.colors);
   }
 }
 
