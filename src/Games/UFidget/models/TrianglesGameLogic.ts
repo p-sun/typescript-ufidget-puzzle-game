@@ -22,19 +22,23 @@ export class TrianglesGameLogic {
     return this.#config.maxCount;
   }
 
-  get difficulty(): Difficulty {
-    return this.#config.difficulty;
-  }
-
   get pattern(): PatternAPI {
     return this.#pattern;
   }
 
-  set config(c: GameLogicConfig) {
-    this.#config = c;
+  setConfig(c: GameLogicConfig) {
+    const didChange =
+      this.#config.maxCount != c.maxCount ||
+      this.#config.gridSize != c.gridSize ||
+      this.#config.difficulty != c.difficulty;
 
-    const newGridSize = c.gridSize <= 0 ? Math.ceil(this.maxCount / 2) * 2 + 1 : c.gridSize;
-    this.#pattern = new Pattern(newGridSize);
+    if (didChange) {
+      this.#config = c;
+
+      const newGridSize = c.gridSize <= 0 ? Math.ceil(this.maxCount / 2) * 2 + 1 : c.gridSize;
+      this.#pattern = new Pattern(newGridSize);
+    }
+    return didChange;
   }
 
   getCell(pos: PatternPos) {
@@ -84,7 +88,7 @@ export class TrianglesGameLogic {
 
     let prevResult = this.#pattern.prevResult;
     let result = nextFoldResult(prevResult, fold, this.#pattern.length);
-    if (this.#pattern.canAddFoldResult(result, this.difficulty)) {
+    if (this.#pattern.canAddFoldResult(result, this.#config.difficulty)) {
       this.#pattern.addFoldResult(result);
       return true;
     }

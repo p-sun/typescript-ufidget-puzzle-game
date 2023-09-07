@@ -59,7 +59,6 @@ export default class TrianglesGame extends Game {
 
     this.#logic = new TrianglesGameLogic();
     this.updateSettings(settings);
-    this.generatePattern();
 
     const resizeCanvas = () => {
       const actualSize = canvasSize();
@@ -74,11 +73,18 @@ export default class TrianglesGame extends Game {
   private updateSettings(s: TrianglesGameSettings) {
     this.#settings = s;
     this.#renderer.colors = TrianglesSets[this.#settings.trianglesTag].triangleColors;
-    this.#logic.config = {
+
+    const didChange = this.#logic.setConfig({
       difficulty: s.difficulty,
       maxCount: this.#renderer.colors.length,
       gridSize: s.gridSize,
-    };
+    });
+    if (didChange) {
+      this.generatePattern();
+    } else {
+      this.renderPattern();
+    }
+
     this.createInputButtons();
   }
 
@@ -114,7 +120,6 @@ export default class TrianglesGame extends Game {
       },
       onChange: (newSettings) => {
         this.updateSettings(newSettings);
-        this.generatePattern();
       },
     });
     inputDiv.innerHTML = '';
@@ -123,6 +128,10 @@ export default class TrianglesGame extends Game {
 
   private generatePattern() {
     this.#logic.generatePattern();
+    this.renderPattern();
+  }
+
+  private renderPattern() {
     this.#renderer.render(this.canvas, this.#logic);
 
     const { folds, startClockwise, layersCount } = this.#logic.pattern;
